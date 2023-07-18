@@ -1,3 +1,4 @@
+#include "mainwindow.h"
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
