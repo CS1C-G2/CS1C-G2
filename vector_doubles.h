@@ -147,7 +147,7 @@ public:
         // make sure we have space
         int index = p - begin();
         if(size_v == space) {
-            if(space = 0) {
+            if(space == 0) {
                 reserve(8);
             }
             else {
