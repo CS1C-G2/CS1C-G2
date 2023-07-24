@@ -1,37 +1,86 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+#include <QMenuBar>
+#include <QMenu>
 
-#include <QMainWindow>
-#include <QPushButton>
-#include <QDialog>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QAction>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
-    Q_OBJECT
+    ui->setupUi(this);
+    createMenus();
+}
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+void MainWindow::createMenus() {
 
-private slots:
-    void createMenus();
-    void onContactUs();
-    void onAbout();
-    void onHelp();
+    // Create the menu bar
+    QMenuBar *menuBar = new QMenuBar(this);
+    setMenuBar(menuBar);
 
-private:
-    Ui::MainWindow *ui;
-    QAction *contactAction;
-    QAction *helpAction;
-    QAction *aboutAction;
+    // Create the "File" menu and add it to the menu bar
+    QMenu *fileMenu = menuBar->addMenu("file");
 
-};
+    // Create the "Contact Us" QAction and add it to the "File" menu
+    contactAction = new QAction("Contact Us", this);
+    helpAction = new QAction("help", this);
+    aboutAction = new QAction("About us", this);
 
-#endif // MAINWINDOW_H
+    fileMenu->addAction(contactAction);
+    fileMenu->addAction(helpAction);
+    fileMenu->addAction(aboutAction);
+
+    connect(contactAction, &QAction::triggered, this, &MainWindow::onContactUs);
+    connect(helpAction, &QAction::triggered, this, &MainWindow::onHelp);
+    connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
+
+} // createMenus
+
+void MainWindow::onContactUs() {
+    QDialog *contactDialog = new QDialog(this);
+    contactDialog->setWindowTitle("Contact Us");
+
+    QLabel *label = new QLabel("please email us at: someone@email.com", contactDialog);
+    label->setAlignment(Qt::AlignCenter);
+
+    QVBoxLayout *layout = new QVBoxLayout(contactDialog);
+    layout->addWidget(label);
+
+    contactDialog->exec();
+
+} //onContactUs
+
+void MainWindow::onHelp() {
+
+    QDialog *contactDialog = new QDialog(this);
+    contactDialog->setWindowTitle("Help");
+
+    QLabel *label = new QLabel("please email us at: someone@email.com", contactDialog);
+    label->setAlignment(Qt::AlignCenter);
+
+    QVBoxLayout *layout = new QVBoxLayout(contactDialog);
+    layout->addWidget(label);
+
+    contactDialog->exec();
+
+} // onHelp
+
+void MainWindow::onAbout() {
+    QDialog *contactDialog = new QDialog(this);
+    contactDialog->setWindowTitle("about");
+
+    QLabel *label = new QLabel("This is the 2D Graphics Modeler application", contactDialog);
+    label->setAlignment(Qt::AlignCenter);
+
+    QVBoxLayout *layout = new QVBoxLayout(contactDialog);
+    layout->addWidget(label);
+    contactDialog->exec();
+
+} // onAbout
+
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+
