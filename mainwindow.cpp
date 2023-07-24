@@ -1,22 +1,37 @@
-#include "mainwindow.h"
-#include <QMenu>
-#include <QMenuBar>
-#include <QMessageBox>
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-{
-    createMenus();
-}
+#include <QMainWindow>
+#include <QPushButton>
+#include <QDialog>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QAction>
 
-void MainWindow::createMenus()
-{
-    QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(tr("&About"), this, &MainWindow::about);
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
 
-void MainWindow::about()
+class MainWindow : public QMainWindow
 {
-    QMessageBox::about(this, tr("About 2D Graphics Modeler"),
-                       tr("This is the 2D Graphics Modeler application."));
-}
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+private slots:
+    void createMenus();
+    void onContactUs();
+    void onAbout();
+    void onHelp();
+
+private:
+    Ui::MainWindow *ui;
+    QAction *contactAction;
+    QAction *helpAction;
+    QAction *aboutAction;
+
+};
+
+#endif // MAINWINDOW_H
