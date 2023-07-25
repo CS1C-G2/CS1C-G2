@@ -1,10 +1,18 @@
+//Parsing
+
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <limits>
+#include <utility>
 #include <map>
-#include "vector.cpp"
+#include <vector>
+#include <QFont>
+#include "vector_doubles.h"
 
-using myStd::vector;
+//using myStd::vector;
+using std::istream;
+using std::stringstream;
 using std::ifstream;
 using std::cout;
 using std::endl;
@@ -13,447 +21,219 @@ using std::streamsize;
 using std::string;
 using std::numeric_limits;
 
-enum SHAPE_TYPES { LINE, POLYLINE, POLYGON, RECTANGLE, SQUARE, ELLIPSE, CIRCLE, TEXT };
+map<string, Qt::GlobalColor> colorMap
+    {
+     {"black", Qt::black},
+     {"white", Qt::white},
+     {"darkGray", Qt::darkGray},
+     {"gray", Qt::gray},
+     {"lightGray", Qt::lightGray},
+     {"red", Qt::red},
+     {"green", Qt::green},
+     {"blue", Qt::blue},
+     {"cyan", Qt::cyan},
+     {"magenta", Qt::magenta},
+     {"yellow", Qt::yellow},
+     {"darkRed", Qt::darkRed},
+     {"darkGreen", Qt::darkGreen},
+     {"darkBlue", Qt::darkBlue},
+     {"darkCyan", Qt::darkCyan},
+     {"darkMagenta", Qt::darkMagenta},
+     {"darkYellow", Qt::darkYellow},
+     {"transparent", Qt::transparent},
+     };
 
-namespace Qt
+map<string, Qt::PenStyle> penStyleMap
+    {
+     {"NoPen", Qt::NoPen},
+     {"SolidLine", Qt::SolidLine},
+     {"DashLine", Qt::DashLine},
+     {"DotLine", Qt::DotLine},
+     {"DashDotLine", Qt::DashDotLine},
+     {"DashDotDotLine", Qt::DashDotDotLine},
+     };
+
+map<string, Qt::PenCapStyle> penCapStyleMap
+    {
+     {"FlatCap", Qt::FlatCap},
+     {"SquareCap", Qt::SquareCap},
+     {"RoundCap", Qt::RoundCap},
+     };
+
+map<string, Qt::PenJoinStyle> penJoinStyleMap
+    {
+     {"MiterJoin", Qt::MiterJoin},
+     {"BevelJoin", Qt::BevelJoin},
+     {"RoundJoin", Qt::RoundJoin},
+     {"SvgMiterJoin", Qt::SvgMiterJoin},
+     };
+
+map<string, Qt::BrushStyle> brushStyleMap
+    {
+     {"NoBrush", Qt::NoBrush},
+     {"SolidPattern", Qt::SolidPattern},
+     {"Dense1Pattern", Qt::Dense1Pattern},
+     {"Dense2Pattern", Qt::Dense2Pattern},
+     {"Dense3Pattern", Qt::Dense3Pattern},
+     {"Dense4Pattern", Qt::Dense4Pattern},
+     {"Dense5Pattern", Qt::Dense5Pattern},
+     {"Dense6Pattern", Qt::Dense6Pattern},
+     {"Dense7Pattern", Qt::Dense7Pattern},
+     {"HorPattern", Qt::HorPattern},
+     {"VerPattern", Qt::VerPattern},
+     {"CrossPattern", Qt::CrossPattern},
+     {"BDiagPattern", Qt::BDiagPattern},
+     {"FDiagPattern", Qt::FDiagPattern},
+     {"DiagCrossPattern", Qt::DiagCrossPattern},
+     {"LinearGradientPattern", Qt::LinearGradientPattern},
+     {"ConicalGradientPattern", Qt::ConicalGradientPattern},
+     {"RadialGradientPattern", Qt::RadialGradientPattern},
+     {"TexturePattern", Qt::TexturePattern},
+     };
+
+map<string, Qt::AlignmentFlag> alignmentFlagMap
+    {
+     {"AlignCenter", Qt::AlignCenter},
+     {"AlignLeft", Qt::AlignLeft},
+     {"AlignRight", Qt::AlignRight},
+     {"AlignJustify", Qt::AlignJustify},
+     {"AlignTop", Qt::AlignTop},
+     {"AlignBottom", Qt::AlignBottom},
+     {"AlignVCenter", Qt::AlignVCenter},
+     {"AlignBaseLine", Qt::AlignBaseline},
+     };
+
+map<string, QFont::Style> fontStyleMap	//double ::?
+    {
+     {"StyleNormal", QFont::StyleNormal},
+     {"StyleItalic", QFont::StyleItalic},
+     {"StyleOblique", QFont::StyleOblique},
+     };
+
+map<string, QFont::Weight> fontWeightMap
+    {
+     {"Thin", QFont::Thin},
+     {"ExtraLight", QFont::ExtraLight},
+     {"Light", QFont::Light},
+     {"Normal", QFont::Normal},
+     {"Medium", QFont::Medium},
+     {"DemiBold", QFont::DemiBold},
+     {"Bold", QFont::Bold},
+     {"ExtraBold", QFont::ExtraBold},
+     {"Black", QFont::Black},
+     };
+
+
+
+// FROM HERE DOWN IS YOUR CODE, ALL THE Q WHATEVER CLASSES ARE QT AND CAN BE INCLUDED
+
+typedef std::pair<string, std::vector<int> > IntVecField;
+typedef std::pair<string, string> StringField;
+
+bool parseIntVectorField(istream& is, const string& expectedFieldName, IntVecField& ivf)
 {
-	enum GlobalColor
-	{
-		black,
-		white,
-		darkGray,
-		gray,
-		lightGray,
-		red,
-		green,
-		blue,
-		cyan,
-		magenta,
-		yellow,
-		darkRed,
-		darkGreen,
-		darkBlue,
-		darkCyan,
-		darkMagenta,
-		darkYellow,
-		transparent,
-	};
 
-	enum PenStyle
-	{
-		NoPen,
-		SolidLine,
-		DashLine,
-		DotLine,
-		DashDotLine,
-		DashDotDotLine,
-	};
+    string line;
 
-	enum PenCapStyle
-	{
-		FlatCap,
-		SquareCap,
-		RoundCap,
-	};
+    getline(is, line);	//gets whole line
+    auto pos=line.find(':');	//if pos = npos, no find : bulletproof needed TODO
+    ivf.first = line.substr(0, pos);	//gives just feildName
+    stringstream fieldstr(line.substr(pos+1, line.size()));	//make a stream, but have the thing youre streaming from be this string
 
-	enum PenJoinStyle
-	{
-		MiterJoin,
-		BevelJoin,
-		RoundJoin,
-		SvgMiterJoin,
-	};
 
-	enum BrushStyle
-	{
-		NoBrush,
-		SolidPattern,
-		Dense1Pattern,
-		Dense2Pattern,
-		Dense3Pattern,
-		Dense4Pattern,
-		Dense5Pattern,
-		Dense6Pattern,
-		Dense7Pattern,
-		HorPattern,
-		VerPattern,
-		CrossPattern,
-		BDiagPattern,
-		FDiagPattern,
-		DiagCrossPattern,
-		LinearGradientPattern,
-		ConicalGradientPattern,
-		RadialGradientPattern,
-		TexturePattern,
-	};
+    while(!fieldstr.eof())	//bulletproof to make sure it only reads ints TODO
+    {
+        int x;
+        fieldstr >> x;
+        fieldstr.ignore(',');
+        ivf.second.push_back(x);
+    }
+
+    if (expectedFieldName.compare(ivf.first) != 0)
+    {
+        return false;
+    }
+
+
+    return true;	//returns a struct of the name and the numbers following
 }
 
-class QPen
+bool parseStringField(istream& is, const string& expectedFieldName, StringField& sf)
 {
-	public:
-		QPen(Qt::GlobalColor, int, Qt::PenStyle, Qt::PenCapStyle, Qt::PenJoinStyle) {}
-};
+    string line;
 
-class QBrush
+    getline(is, line);  //gets whole line
+    auto pos=line.find(':');    //if pos = npos, no find : bulletproof needed TODO
+    sf.first = line.substr(0, pos);
+    sf.second = line.substr(pos+1, line.size());
+
+    if (expectedFieldName.compare(sf.first) != 0)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+template<typename T>
+bool parseEnumField(istream& is, const string& expectedFieldName, const map<string, T>& m, T& e)
 {
-	public:
-		QBrush(Qt::GlobalColor, Qt::BrushStyle) {}
-};
+    StringField sf;
+    bool ret = parseStringField(is, expectedFieldName, sf);
+    if (!ret)
+        return false;
 
-class QPoint
-{
-	public:
-		QPoint(int, int) {}
-};
+    auto it = m.find(sf.second);
+    if(it == m.end())
+        return false;
 
-class Shape
-{
-	int id;
-	SHAPE_TYPES type;
-};
+    e = it->second;
+    return true;
+}
 
-class Line : public Shape
-{
-	public:
-		Line(int, int, int, int, QPen*) {}
-		~Line() {delete pen;}
 
-	private:
-		QPen* pen;
-};
 
-class Polyline : public Shape
-{
 
-};
 
-class Polygon : public Shape
-{
 
-};
-class Rectangle : public Shape
-{
-
-};
-class Square : public Shape
-{
-
-};
-class Ellipse : public Shape
-{
-
-};
-class Circle : public Shape
-{
-
-};
-class Text : public Shape
-{
-
-};
-
-map<string, Qt::GlobalColor> colorMap {
-	{"black", Qt::black},
-	{"white", Qt::white},
-	{"darkGray", Qt::darkGray},
-	{"gray", Qt::gray},
-	{"lightGray", Qt::lightGray},
-	{"red", Qt::red},
-	{"green", Qt::green},
-	{"blue", Qt::blue},
-	{"cyan", Qt::cyan},
-	{"magenta", Qt::magenta},
-	{"yellow", Qt::yellow},
-	{"darkRed", Qt::darkRed},
-	{"darkGreen", Qt::darkGreen},
-	{"darkBlue", Qt::darkBlue},
-	{"darkCyan", Qt::darkCyan},
-	{"darkMagenta", Qt::darkMagenta},
-	{"darkYellow", Qt::darkYellow},
-	{"transparent", Qt::transparent},
-};
-
-map<string, Qt::PenStyle> penStyleMap {
-	{"NoPen", Qt::NoPen},
-	{"SolidLine", Qt::SolidLine},
-	{"DashLine", Qt::DashLine},
-	{"DotLine", Qt::DotLine},
-	{"DashDotLine", Qt::DashDotLine},
-	{"DashDotDotLine", Qt::DashDotDotLine},
-};
-
-map<string, Qt::PenCapStyle> penCapStyleMap {
-	{"FlatCap", Qt::FlatCap},
-	{"SquareCap", Qt::SquareCap},
-	{"RoundCap", Qt::RoundCap},
-};
-
-map<string, Qt::PenJoinStyle> penJoinStyleMap {
-	{"MiterJoin", Qt::MiterJoin},
-	{"BevelJoin", Qt::BevelJoin},
-	{"RoundJoin", Qt::RoundJoin},
-	{"SvgMiterJoin", Qt::SvgMiterJoin},
-};
-
-map<string, Qt::BrushStyle> brushStyleMap {
-	{"NoBrush", Qt::NoBrush},
-	{"SolidPattern", Qt::SolidPattern},
-	{"Dense1Pattern", Qt::Dense1Pattern},
-	{"Dense2Pattern", Qt::Dense2Pattern},
-	{"Dense3Pattern", Qt::Dense3Pattern},
-	{"Dense4Pattern", Qt::Dense4Pattern},
-	{"Dense5Pattern", Qt::Dense5Pattern},
-	{"Dense6Pattern", Qt::Dense6Pattern},
-	{"Dense7Pattern", Qt::Dense7Pattern},
-	{"HorPattern", Qt::HorPattern},
-	{"VerPattern", Qt::VerPattern},
-	{"CrossPattern", Qt::CrossPattern},
-	{"BDiagPattern", Qt::BDiagPattern},
-	{"FDiagPattern", Qt::FDiagPattern},
-	{"DiagCrossPattern", Qt::DiagCrossPattern},
-	{"LinearGradientPattern", Qt::LinearGradientPattern},
-	{"ConicalGradientPattern", Qt::ConicalGradientPattern},
-	{"RadialGradientPattern", Qt::RadialGradientPattern},
-	{"TexturePattern", Qt::TexturePattern},
-};
-
+#if 0
 vector<Shape*> parse(string fileName);
-QPen* getPen(ifstream& inFile);
-QBrush* getBrush(ifstream& inFile);
 
 int main()
 {
-	vector<Shape*> shapes = parse("shapes copy.txt");
+    vector<Shape*> shapes = parse("shapes copy.txt");
 
-	for (Shape* shape : shapes)
-	{
-		delete shape;
-	}
+    for (Shape* shape : shapes)
+    {
+        delete shape;
+    }
 
-	return 0;
+    return 0;
 }
 
 vector<Shape*> parse(string fileName)
 {
-	ifstream inFile;
-	inFile.open(fileName);
+    ifstream inFile;
+    ShapeFactory f;
 
-	vector<Shape*> shapes;
+    inFile.open(fileName);
 
-	int id = 0;
-	string type;
-	SHAPE_TYPES shapeType;
+    vector<Shape*> shapes;
 
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> id;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> type;
-
-	// Not necessary prolly
-	// if (type == "Line")
-	// 	shapeType = LINE;
-	// else if (type == "Polyline")
-	// 	shapeType = POLYLINE;
-	// else if (type == "Polygon")
-	// 	shapeType = POLYGON;
-	// else if (type == "Rectangle")
-	// 	shapeType = RECTANGLE;
-	// else if (type == "Square")
-	// 	shapeType = SQUARE;
-	// else if (type == "Ellipse")
-	// 	shapeType = ELLIPSE;
-	// else if (type == "Circle")
-	// 	shapeType = CIRCLE;
-	// else if (type == "Text")
-	// 	shapeType = TEXT;
-
-	if (type == "Line")
-	{
-		int x1 = 0;
-		int y1 = 0;
-		int x2 = 0;
-		int y2 = 0;
-
-		inFile.ignore(numeric_limits<streamsize>::max(), ':');
-		inFile >> x1;
-		inFile.ignore();
-
-		inFile >> y1;
-		inFile.ignore();
-
-		inFile >> x2;
-		inFile.ignore();
-
-		inFile >> y2;
-		inFile.ignore();
-
-		QPen* pen = getPen(inFile);
-		
-		shapes.push_back(new Line(x1, y1, x2, y2, pen));
-	}
-	else if (type == "Polyline")
-	{
-
-	}
-	else if (type == "Polygon")
-	{
-		int x = 0;
-		int y = 0;
-
-		// QList<QPoint> points;
-
-		inFile.ignore(numeric_limits<streamsize>::max(), ':');
-        while (inFile.peek() != '\n')
+    while(!inFile.eof())
+    {
+        Shape* s = f.createFromStream(inFile);
+        if(s != nullptr)	//safe to keep reading bc factory function will only create a shape when it finds a valid shapeid.
         {
-            inFile >> x;
-            inFile.ignore();
-            inFile >> y;
-			inFile.ignore();
-
-			cout << x << " " << y << endl;
-
-			// points.push_back(QPoint(x, y));
+            shapes.push_back(s);
         }
 
-		// QPen* pen = getPen(inFile);
-
-		// shapes.push_back(new Polygon(points, pen));
-	}
-	else if (type == "Rectangle" || type == "Square")
-	{
-		int x1 = 0;
-		int y1 = 0;
-		int x2 = 0;
-		int y2 = 0;
-
-		inFile.ignore(numeric_limits<streamsize>::max(), ':');
-		inFile >> x1;
-		inFile.ignore();
-
-		inFile >> y1;
-		inFile.ignore();
-
-		inFile >> x2;
-		inFile.ignore();
-
-		inFile >> y2;
-		inFile.ignore();
-
-		QPoint topLeft(x1, y1);
-		QPoint bottomRight(x2, y2);
-
-		QPen* pen = getPen(inFile);
-		QBrush* brush = getBrush(inFile);
-
-		// shapes.push_back(new Rectangle(new QRect(topLeft, bottomRight), pen, brush));
-	}
-	else if (type == "Ellipse")
-		shapeType = ELLIPSE;
-	else if (type == "Circle")
-		shapeType = CIRCLE;
-	else if (type == "Text")
-	{
-		int x1 = 0;
-		int y1 = 0;
-		int x2 = 0;
-		int y2 = 0;
-
-		string text;
-		string color;
-		string alignment;
-		int pointSize = 0;
-		string fontFamily;
-		string fontStyle;
-		string fontWeight;
-
-		inFile.ignore(numeric_limits<streamsize>::max(), ':');
-		inFile >> x1;
-		inFile.ignore();
-
-		inFile >> y1;
-		inFile.ignore();
-
-		inFile >> x2;
-		inFile.ignore();
-
-		inFile >> y2;
-		inFile.ignore();
+    }
 
 
-	}
-	
-	
 
-	inFile.close();
+    inFile.close();
 
-	return shapes;
+    return shapes;
 }
-
-QPen* getPen(ifstream& inFile)
-{
-	string color;
-	int width;
-	string style;
-	string capStyle;
-	string joinStyle;
-
-	Qt::GlobalColor penColor = Qt::black;
-	Qt::PenStyle penStyle = Qt::SolidLine;
-	Qt::PenCapStyle penCapStyle = Qt::SquareCap;
-	Qt::PenJoinStyle penJoinStyle = Qt::BevelJoin;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> color;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> width;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> style;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> capStyle;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> joinStyle;
-	inFile.ignore();
-
-	if (colorMap.contains(color))
-		penColor = colorMap[color];
-
-	if (penStyleMap.contains(style))
-		penStyle = penStyleMap[style];
-
-	if (penCapStyleMap.contains(capStyle))
-		penCapStyle = penCapStyleMap[capStyle];
-
-	if (penJoinStyleMap.contains(joinStyle))
-		penJoinStyle = penJoinStyleMap[joinStyle];
-
-	return new QPen(penColor, width, penStyle, penCapStyle, penJoinStyle);
-}
-
-QBrush* getBrush(ifstream& inFile)
-{
-	string color;
-	string style;
-
-	Qt::GlobalColor brushColor = Qt::black;
-	Qt::BrushStyle brushStyle = Qt::SolidPattern;
-
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> color;
-	
-	inFile.ignore(numeric_limits<streamsize>::max(), ':');
-	inFile >> style;
-	inFile.ignore();
-
-	if (colorMap.contains(color))
-		brushColor = colorMap[color];
-
-	if (brushStyleMap.contains(style))
-		brushStyle = brushStyleMap[style];
-
-	return new QBrush(brushColor, brushStyle);
-}
+#endif
