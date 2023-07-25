@@ -12,6 +12,8 @@ class LoginWindow : public QDialog
 public:
     LoginWindow(QWidget *parent = nullptr);
 
+    bool isAdmin() const;
+
 private slots:
     void login();
 
