@@ -2,15 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QPushButton>
-#include <QDialog>
-#include <QLabel>
 #include <QVBoxLayout>
-#include <QAction>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include <QFormLayout>
+#include "qpushbutton.h"
+#include "qcombobox.h"
+#include "parser.cpp"
 
 class MainWindow : public QMainWindow
 {
@@ -18,20 +14,15 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
 
 private slots:
-    void createMenus();
-    void onContactUs();
-    void onAbout();
-    void onHelp();
+    void about();
+    void createShape();
 
 private:
-    Ui::MainWindow *ui;
-    QAction *contactAction;
-    QAction *helpAction;
-    QAction *aboutAction;
-
+    QComboBox* shapeComboBox;
+    QPushButton* createShapeButton;
+    void createMenus();
 };
 
 #endif // MAINWINDOW_H
