@@ -8,7 +8,12 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QPainterPath>
-#include "shape.h"
+
+#include "line.h"
+#include "rectangle.h"
+#include "square.h"
+#include "ellipse.h"
+#include "circle.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,13 +37,130 @@ void MainWindow::startRenderingArea() {
 
 } // startRenderingArea
 
+void MainWindow::createShape() {
+    switch (ui->tabWidget->currentIndex()) {
+        case 0:
+            createLine();
+            break;
+
+        case 1:
+            createPolyline();
+            break;
+
+        case 2:
+            createPolygon();
+            break;
+
+        case 3:
+            createRectangle();
+            break;
+
+        case 4:
+            createSquare();
+            break;
+
+        case 5:
+            createEllipse();
+            break;
+
+        case 6:
+            createCircle();
+            break;
+
+        case 7:
+            createText();
+            break;
+
+        default:
+            break;
+    }
+}
+
 void MainWindow::onShapeCreate() {
 
     // Create "Create" button for Square tab
     QPushButton* createButton = ui->CreateShape;
-    connect(createButton, &QPushButton::clicked, this, &MainWindow::createSquare); // Connect the button to the createSquare() slot
+    connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
 
 } // onShapeCreate
+
+void MainWindow::createLine() {
+    // getting stuff from the UI
+    int x = ui->x_2->value();
+    int y = ui->y_2->value();
+    int x1 = ui->x1_2->value();
+    int y1 = ui->y1_2->value();
+
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_2->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_2->value();
+
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_2->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_2->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_2->currentIndex() * 64);
+
+    // Create the QPen objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+
+    graphicsScene->clear();
+    // Create the Line object
+    Line* line = new Line(3, x, y, x1, y1, pen);
+
+    // Add the line to the QGraphicsScene
+    graphicsScene->addItem(line);
+
+    // Call the draw function to render the line
+    line->draw();
+}
+
+void MainWindow::createPolyline() {
+
+}
+
+void MainWindow::createPolygon() {
+
+}
+
+void MainWindow::createRectangle() {
+    // getting stuff from the UI
+    int x = ui->x_1->value();
+    int y = ui->y_1->value();
+
+    int length = ui->length_1->value();
+    int width = ui->width_1->value();
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_1->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_1->value();
+
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_1->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_1->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_1->currentIndex() * 64);
+
+    // Get selected brush color and style from the UI
+    Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue_1->currentIndex() + 2);
+    Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue_1->currentIndex());
+
+    // Create the QPen and QBrush objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+    QBrush* brush = new QBrush(brushColor, brushStyle);
+    graphicsScene->clear();
+    // Create the Rectangle object
+    Rectangle* rect = new Rectangle(2, x, y, length, width, pen, brush);
+
+    // Add the rectangle to the QGraphicsScene
+    graphicsScene->addItem(rect);
+
+    // Call the draw function to render the rectangle
+    rect->draw();
+}
 
 void MainWindow::createSquare() {
     // getting stuff from the UI
@@ -47,16 +169,16 @@ void MainWindow::createSquare() {
 
     int length = ui->length->value();
     // Get selected pen color and style from the UI
-    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->comboBox->currentIndex());
-    int penWidth = ui->length_2->value();
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue->currentIndex() + 2);
+    int penWidth = ui->penWidthValue->value();
 
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->comboBox_3->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->comboBox_4->currentIndex());
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->comboBox_5->currentIndex());
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue->currentIndex() * 64);
 
     // Get selected brush color and style from the UI
-     Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->comboBox_6->currentIndex());
-     Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->comboBox_7->currentIndex());
+     Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue->currentIndex() + 2);
+     Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue->currentIndex());
 
     // Create the QPen and QBrush objects
     QPen* pen = new QPen(penColor);
@@ -67,7 +189,7 @@ void MainWindow::createSquare() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Square object
-    Square* square = new Square(x, y, length, pen, brush);
+    Square* square = new Square(1, x, y, length, pen, brush);
 
     // Add the square to the QGraphicsScene
     graphicsScene->addItem(square);
@@ -76,6 +198,83 @@ void MainWindow::createSquare() {
     square->draw();
 
 } // createSquare
+
+void MainWindow::createEllipse() {
+    // getting stuff from the UI
+    int x = ui->x_3->value();
+    int y = ui->y_3->value();
+    int radius1 = ui->radius1_3->value();
+    int radius2 = ui->radius2_3->value();
+
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_3->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_3->value();
+
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_3->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_3->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_3->currentIndex() * 64);
+
+    // Get selected brush color and style from the UI
+    Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue_3->currentIndex() + 2);
+    Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue_3->currentIndex());
+
+    // Create the QPen and QBrush objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+    QBrush* brush = new QBrush(brushColor, brushStyle);
+    graphicsScene->clear();
+    // Create the Ellipse object
+    Ellipse* ellipse = new Ellipse(4, x, y, radius1, radius2, pen, brush);
+
+    // Add the ellipse to the QGraphicsScene
+    graphicsScene->addItem(ellipse);
+
+    // Call the draw function to render the ellipse
+    ellipse->draw();
+}
+
+void MainWindow::createCircle() {
+    // getting stuff from the UI
+    int x = ui->x_4->value();
+    int y = ui->y_4->value();
+    int radius = ui->radius_4->value();
+
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_4->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_4->value();
+
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_4->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_4->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_4->currentIndex() * 64);
+
+    // Get selected brush color and style from the UI
+    Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue_4->currentIndex() + 2);
+    Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue_4->currentIndex());
+
+    // Create the QPen and QBrush objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+    QBrush* brush = new QBrush(brushColor, brushStyle);
+    graphicsScene->clear();
+    // Create the Circle object
+    Circle* circle = new Circle(5, x, y, radius, pen, brush);
+
+    // Add the circle to the QGraphicsScene
+    graphicsScene->addItem(circle);
+
+    // Call the draw function to render the circle
+    circle->draw();
+}
+
+void MainWindow::createText() {
+
+}
 
 void MainWindow::createMenus() {
     // Create the menu bar

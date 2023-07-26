@@ -17,6 +17,9 @@ double Ellipse::area() {
 double Ellipse::perimeter() {
     return 0;
 }
+QRectF Ellipse::boundingRect() const {
+    return QRectF(x, y, radius1 * 2, radius2 * 2);
+}
 void Ellipse::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);

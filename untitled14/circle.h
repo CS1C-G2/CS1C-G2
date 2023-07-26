@@ -9,6 +9,7 @@ public:
     void move(int x, int y) override;
     double area() override;
     double perimeter() override;
+    QRectF boundingRect() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:

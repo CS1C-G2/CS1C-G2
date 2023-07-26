@@ -26,7 +26,7 @@ public:
 
 public slots:
     void startRenderingArea();
-    void createSquare();
+    void createShape();
 
 private slots:
     void createMenus();
@@ -34,6 +34,14 @@ private slots:
     void onAbout();
     void onHelp();
     void onShapeCreate();
+    void createLine();
+    void createPolyline();
+    void createPolygon();
+    void createRectangle();
+    void createSquare();
+    void createEllipse();
+    void createCircle();
+    void createText();
 
 private:
     Ui::MainWindow *ui;

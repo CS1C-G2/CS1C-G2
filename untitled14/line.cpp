@@ -21,6 +21,9 @@ double Line::area() {
 double Line::perimeter() {
     return 0;
 }
+QRectF Line::boundingRect() const {
+    return QRectF(x1, y1, x2 - x1, y2 - y1);
+}
 void Line::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);

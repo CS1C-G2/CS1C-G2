@@ -15,6 +15,9 @@ double Circle::area() {
 double Circle::perimeter() {
     return 2 * pi * radius;
 }
+QRectF Circle::boundingRect() const {
+    return QRectF(x, y, radius * 2, radius * 2);
+}
 void Circle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);

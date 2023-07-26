@@ -15,6 +15,9 @@ double Rectangle::area() {
 double Rectangle::perimeter() {
     return (length * 2) + (width * 2);
 }
+QRectF Rectangle::boundingRect() const {
+    return QRectF(x, y, length, length);
+}
 void Rectangle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);

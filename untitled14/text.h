@@ -18,7 +18,6 @@ public:
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
-
     void setWidth(int width);
 
     void setLenth(int length);
