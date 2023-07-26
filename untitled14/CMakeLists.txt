@@ -24,6 +24,8 @@ set(PROJECT_SOURCES
         ellipse.h
         line.cpp
         line.h
+        polyline.cpp
+        polyline.h
         polygon.cpp
         polygon.h
         rectangle.cpp
