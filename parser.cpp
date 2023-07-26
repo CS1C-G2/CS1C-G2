@@ -1,154 +1,111 @@
-//Parsing
+#include "parser.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <limits>
-#include <utility>
-#include <map>
-#include <vector>
-#include <QFont>
-#include "vector_doubles.h"
-
-//using myStd::vector;
-using std::istream;
-using std::stringstream;
-using std::ifstream;
-using std::cout;
-using std::endl;
-using std::map;
-using std::streamsize;
-using std::string;
-using std::numeric_limits;
-
+//Maps string to enum
+/*===============================================================================*/
 map<string, Qt::GlobalColor> colorMap
-{
-    {"black", Qt::black},
-    {"white", Qt::white},
-    {"darkGray", Qt::darkGray},
-    {"gray", Qt::gray},
-    {"lightGray", Qt::lightGray},
-    {"red", Qt::red},
-    {"green", Qt::green},
-    {"blue", Qt::blue},
-    {"cyan", Qt::cyan},
-    {"magenta", Qt::magenta},
-    {"yellow", Qt::yellow},
-    {"darkRed", Qt::darkRed},
-    {"darkGreen", Qt::darkGreen},
-    {"darkBlue", Qt::darkBlue},
-    {"darkCyan", Qt::darkCyan},
-    {"darkMagenta", Qt::darkMagenta},
-    {"darkYellow", Qt::darkYellow},
-    {"transparent", Qt::transparent},
-};
+    {
+     {"black", Qt::black},
+     {"white", Qt::white},
+     {"darkGray", Qt::darkGray},
+     {"gray", Qt::gray},
+     {"lightGray", Qt::lightGray},
+     {"red", Qt::red},
+     {"green", Qt::green},
+     {"blue", Qt::blue},
+     {"cyan", Qt::cyan},
+     {"magenta", Qt::magenta},
+     {"yellow", Qt::yellow},
+     {"darkRed", Qt::darkRed},
+     {"darkGreen", Qt::darkGreen},
+     {"darkBlue", Qt::darkBlue},
+     {"darkCyan", Qt::darkCyan},
+     {"darkMagenta", Qt::darkMagenta},
+     {"darkYellow", Qt::darkYellow},
+     {"transparent", Qt::transparent},
+     };
 
 map<string, Qt::PenStyle> penStyleMap
-{
-    {"NoPen", Qt::NoPen},
-    {"SolidLine", Qt::SolidLine},
-    {"DashLine", Qt::DashLine},
-    {"DotLine", Qt::DotLine},
-    {"DashDotLine", Qt::DashDotLine},
-    {"DashDotDotLine", Qt::DashDotDotLine},
-};
+    {
+     {"NoPen", Qt::NoPen},
+     {"SolidLine", Qt::SolidLine},
+     {"DashLine", Qt::DashLine},
+     {"DotLine", Qt::DotLine},
+     {"DashDotLine", Qt::DashDotLine},
+     {"DashDotDotLine", Qt::DashDotDotLine},
+     };
 
 map<string, Qt::PenCapStyle> penCapStyleMap
-{
-    {"FlatCap", Qt::FlatCap},
-    {"SquareCap", Qt::SquareCap},
-    {"RoundCap", Qt::RoundCap},
-};
+    {
+     {"FlatCap", Qt::FlatCap},
+     {"SquareCap", Qt::SquareCap},
+     {"RoundCap", Qt::RoundCap},
+     };
 
 map<string, Qt::PenJoinStyle> penJoinStyleMap
-{
-    {"MiterJoin", Qt::MiterJoin},
-    {"BevelJoin", Qt::BevelJoin},
-    {"RoundJoin", Qt::RoundJoin},
-    {"SvgMiterJoin", Qt::SvgMiterJoin},
-};
+    {
+     {"MiterJoin", Qt::MiterJoin},
+     {"BevelJoin", Qt::BevelJoin},
+     {"RoundJoin", Qt::RoundJoin},
+     {"SvgMiterJoin", Qt::SvgMiterJoin},
+     };
 
 map<string, Qt::BrushStyle> brushStyleMap
-{
-    {"NoBrush", Qt::NoBrush},
-    {"SolidPattern", Qt::SolidPattern},
-    {"Dense1Pattern", Qt::Dense1Pattern},
-    {"Dense2Pattern", Qt::Dense2Pattern},
-    {"Dense3Pattern", Qt::Dense3Pattern},
-    {"Dense4Pattern", Qt::Dense4Pattern},
-    {"Dense5Pattern", Qt::Dense5Pattern},
-    {"Dense6Pattern", Qt::Dense6Pattern},
-    {"Dense7Pattern", Qt::Dense7Pattern},
-    {"HorPattern", Qt::HorPattern},
-    {"VerPattern", Qt::VerPattern},
-    {"CrossPattern", Qt::CrossPattern},
-    {"BDiagPattern", Qt::BDiagPattern},
-    {"FDiagPattern", Qt::FDiagPattern},
-    {"DiagCrossPattern", Qt::DiagCrossPattern},
-    {"LinearGradientPattern", Qt::LinearGradientPattern},
-    {"ConicalGradientPattern", Qt::ConicalGradientPattern},
-    {"RadialGradientPattern", Qt::RadialGradientPattern},
-    {"TexturePattern", Qt::TexturePattern},
-};
+    {
+     {"NoBrush", Qt::NoBrush},
+     {"SolidPattern", Qt::SolidPattern},
+     {"Dense1Pattern", Qt::Dense1Pattern},
+     {"Dense2Pattern", Qt::Dense2Pattern},
+     {"Dense3Pattern", Qt::Dense3Pattern},
+     {"Dense4Pattern", Qt::Dense4Pattern},
+     {"Dense5Pattern", Qt::Dense5Pattern},
+     {"Dense6Pattern", Qt::Dense6Pattern},
+     {"Dense7Pattern", Qt::Dense7Pattern},
+     {"HorPattern", Qt::HorPattern},
+     {"VerPattern", Qt::VerPattern},
+     {"CrossPattern", Qt::CrossPattern},
+     {"BDiagPattern", Qt::BDiagPattern},
+     {"FDiagPattern", Qt::FDiagPattern},
+     {"DiagCrossPattern", Qt::DiagCrossPattern},
+     {"LinearGradientPattern", Qt::LinearGradientPattern},
+     {"ConicalGradientPattern", Qt::ConicalGradientPattern},
+     {"RadialGradientPattern", Qt::RadialGradientPattern},
+     {"TexturePattern", Qt::TexturePattern},
+     };
 
 map<string, Qt::AlignmentFlag> alignmentFlagMap
-{
-    {"AlignCenter", Qt::AlignCenter},
-    {"AlignLeft", Qt::AlignLeft},
-    {"AlignRight", Qt::AlignRight},
-    {"AlignJustify", Qt::AlignJustify},
-    {"AlignTop", Qt::AlignTop},
-    {"AlignBottom", Qt::AlignBottom},
-    {"AlignVCenter", Qt::AlignVCenter},
-    {"AlignBaseLine", Qt::AlignBaseline},
-};
+    {
+     {"AlignCenter", Qt::AlignCenter},
+     {"AlignLeft", Qt::AlignLeft},
+     {"AlignRight", Qt::AlignRight},
+     {"AlignJustify", Qt::AlignJustify},
+     {"AlignTop", Qt::AlignTop},
+     {"AlignBottom", Qt::AlignBottom},
+     {"AlignVCenter", Qt::AlignVCenter},
+     {"AlignBaseLine", Qt::AlignBaseline},
+     };
 
 map<string, QFont::Style> fontStyleMap	//double ::?
-{
-    {"StyleNormal", QFont::StyleNormal},
-    {"StyleItalic", QFont::StyleItalic},
-    {"StyleOblique", QFont::StyleOblique},
-};
+    {
+     {"StyleNormal", QFont::StyleNormal},
+     {"StyleItalic", QFont::StyleItalic},
+     {"StyleOblique", QFont::StyleOblique},
+     };
 
 map<string, QFont::Weight> fontWeightMap
-{
-    {"Thin", QFont::Thin},
-    {"ExtraLight", QFont::ExtraLight},
-    {"Light", QFont::Light},
-    {"Normal", QFont::Normal},
-    {"Medium", QFont::Medium},
-    {"DemiBold", QFont::DemiBold},
-    {"Bold", QFont::Bold},
-    {"ExtraBold", QFont::ExtraBold},
-    {"Black", QFont::Black},
-};
+    {
+     {"Thin", QFont::Thin},
+     {"ExtraLight", QFont::ExtraLight},
+     {"Light", QFont::Light},
+     {"Normal", QFont::Normal},
+     {"Medium", QFont::Medium},
+     {"DemiBold", QFont::DemiBold},
+     {"Bold", QFont::Bold},
+     {"ExtraBold", QFont::ExtraBold},
+     {"Black", QFont::Black},
+     };
+/*=================================================================================*/
 
-
-class QPen
-{
-public:
-    QPen(Qt::GlobalColor, int, Qt::PenStyle, Qt::PenCapStyle, Qt::PenJoinStyle) {}
-};
-
-class QBrush
-{
-public:
-    QBrush(Qt::GlobalColor, Qt::BrushStyle) {}
-};
-
-class QPoint
-{
-public:
-    QPoint(int, int) {}
-};
-
-// FROM HERE DOWN IS YOUR CODE, ALL THE Q WHATEVER CLASSES ARE QT AND CAN BE INCLUDED
-
-enum SHAPE_TYPES { LINE, POLYLINE, POLYGON, RECTANGLE, SQUARE, ELLIPSE, CIRCLE, TEXT };
-
-typedef std::pair<string, std::vector<int> > IntVecField;
-typedef std::pair<string, string> StringField;
-
+//standalone function
 bool parseIntVectorField(istream& is, const string& expectedFieldName, IntVecField& ivf)
 {
 
@@ -177,6 +134,7 @@ bool parseIntVectorField(istream& is, const string& expectedFieldName, IntVecFie
     return true;	//returns a struct of the name and the numbers following
 }
 
+//standalone function
 bool parseStringField(istream& is, const string& expectedFieldName, StringField& sf)
 {
     string line;
@@ -194,421 +152,379 @@ bool parseStringField(istream& is, const string& expectedFieldName, StringField&
     return true;
 }
 
-template<typename T>
-bool parseEnumField(istream& is, const string& expectedFieldName, const map<string, T>& m, T& e)
+/*=======================================================================================
+ * SHAPE CLASS FUNCTIONS
+ * =====================================================================================*/
+QPen* Shape::serializePen(istream& is) // allocates a QPen and initializes from data read from the stream
 {
+    int width;
+    IntVecField ivf;
     StringField sf;
-    bool ret = parseStringField(is, expectedFieldName, sf);
-    if (!ret)
-        return false;
 
-    auto it = m.find(sf.second);
-    if(it == m.end())
-        return false;
+    Qt::GlobalColor penColor = Qt::black;
+    Qt::PenStyle penStyle = Qt::SolidLine;
+    Qt::PenCapStyle penCapStyle = Qt::SquareCap;
+    Qt::PenJoinStyle penJoinStyle = Qt::BevelJoin;
 
-    e = it->second;
-    return true;
+    if(!parseEnumField<Qt::GlobalColor>(is, "PenColor", colorMap, penColor))
+    {
+        return nullptr;
+    }
+
+    if(parseIntVectorField(is, "PenWidth", ivf))
+    {
+        if(ivf.second.size() == 1)
+        {
+            width = ivf.second[0];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+    if(!parseEnumField<Qt::PenStyle>(is, "PenStyle", penStyleMap, penStyle))
+    {
+        return nullptr;
+    }
+
+    if(!parseEnumField<Qt::PenCapStyle>(is, "PenCapStyle", penCapStyleMap, penCapStyle))
+    {
+        return nullptr;
+    }
+
+    if(!parseEnumField<Qt::PenJoinStyle>(is, "PenJoinStyle", penJoinStyleMap, penJoinStyle))
+    {
+        return nullptr;
+    }
+
+    return new QPen(penColor, width, penStyle, penCapStyle, penJoinStyle);
 }
 
-class Shape
+QBrush* Shape::serializeBrush(istream& is) // allocates a QBrush and initializes from data read from the stream
 {
-public:
-    Shape(int id) : shapeID(id), pen(nullptr) {}
-    //virtual string getName() = 0;
-    virtual ~Shape() { if (pen != nullptr) delete pen; }
-    virtual bool serializeShape(istream& is) = 0;
-protected:
-    QPen* serializePen(istream& is) // allocates a QPen and initializes from data read from the stream
+    string color;
+    string style;
+    StringField sf;
+
+    Qt::GlobalColor brushColor = Qt::black;
+    Qt::BrushStyle brushStyle = Qt::SolidPattern;
+
+    if(!parseEnumField<Qt::GlobalColor>(is, "BrushColor", colorMap, brushColor))
     {
-         int width;
-        IntVecField ivf;
-        StringField sf;
-
-        Qt::GlobalColor penColor = Qt::black;
-        Qt::PenStyle penStyle = Qt::SolidLine;
-        Qt::PenCapStyle penCapStyle = Qt::SquareCap;
-        Qt::PenJoinStyle penJoinStyle = Qt::BevelJoin;
-
-        if(!parseEnumField<Qt::GlobalColor>(is, "PenColor", colorMap, penColor))
-        {
-            return nullptr;
-        }
-
-        if(parseIntVectorField(is, "PenWidth", ivf))
-        {
-            if(ivf.second.size() == 1)
-            {
-                width = ivf.second[0];
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-
-        if(!parseEnumField<Qt::PenStyle>(is, "PenStyle", penStyleMap, penStyle))
-        {
-            return nullptr;
-        }
-
-        if(!parseEnumField<Qt::PenCapStyle>(is, "PenCapStyle", penCapStyleMap, penCapStyle))
-        {
-            return nullptr;
-        }
-
-        if(!parseEnumField<Qt::PenJoinStyle>(is, "PenJoinStyle", penJoinStyleMap, penJoinStyle))
-        {
-            return nullptr;
-        }
-
-        return new QPen(penColor, width, penStyle, penCapStyle, penJoinStyle);
+        return nullptr;
     }
 
-    QBrush* serializeBrush(istream& is) // allocates a QBrush and initializes from data read from the stream
+    if(!parseEnumField<Qt::BrushStyle>(is, "BrushStyle", brushStyleMap, brushStyle))
     {
-        string color;
-        string style;
-        StringField sf;
+        return nullptr;
+    }
 
-        Qt::GlobalColor brushColor = Qt::black;
-        Qt::BrushStyle brushStyle = Qt::SolidPattern;
+    return new QBrush(brushColor, brushStyle);
+}
 
-        if(!parseEnumField<Qt::GlobalColor>(is, "BrushColor", colorMap, brushColor))
+
+QFont* Shape::serializeFont(istream& is)
+{
+    IntVecField ivf;
+    int textPointSize;
+
+    StringField sf;
+    string textFontFamily;
+
+    QFont::Weight weight;
+    QFont::Style style;
+
+    if(parseIntVectorField(is, "textPointSize", ivf))
+    {
+        if(ivf.second.size() == 1)
+        {
+            textPointSize = ivf.second[0];
+        }
+        else
         {
             return nullptr;
         }
-
-        if(!parseEnumField<Qt::BrushStyle>(is, "BrushStyle", brushStyleMap, brushStyle))
-        {
-            return nullptr;
-        }
-
-        return new QBrush(brushColor, brushStyle);
+    }
+    else
+    {
+        return nullptr;
     }
 
 
-        QFont* serializeFont(istream& is)
-        {
-            IntVecField ivf;
-            int textPointSize;
-
-            StringField sf;
-            string textFontFamily;
-
-            QFont::Weight weight;
-            QFont::Style style;
-
-            if(parseIntVectorField(is, "textPointSize", ivf))
-            {
-                if(ivf.second.size() == 1)
-                {
-                    textPointSize = ivf.second[0];
-                }
-                else
-                {
-                    return nullptr;
-                }
-            }
-            else
-            {
-                return nullptr;
-            }
-
-
-            if(parseStringField(is, "TextFontFamily", sf))
-            {
-                textFontFamily = sf.second;
-            }
-            else
-            {
-                return nullptr;
-            }
-
-
-            if(!parseEnumField<QFont::Style>(is, "TextFontStyle", fontStyleMap, style))
-            {
-                return nullptr;
-            }
-
-            if(!parseEnumField<QFont::Weight>(is, "TextFontWeight", fontWeightMap, weight))
-            {
-                return nullptr;
-            }
-            QFont* f = new QFont(QString(textFontFamily.c_str()), textPointSize);
-            f->setStyle(style);
-            f->setWeight(weight);
-            return f;
-        }
-
-
-        QPen* pen;
-        QBrush* brush;
-        QFont* font;
-        int shapeID;
-    };
-
-    class Line : public Shape
+    if(parseStringField(is, "TextFontFamily", sf))
     {
-    public:
-        //
-        Line(int id) : Shape(id) {}
-        virtual bool serializeShape(istream& is) override
+        textFontFamily = sf.second;
+    }
+    else
+    {
+        return nullptr;
+    }
+
+
+    if(!parseEnumField<QFont::Style>(is, "TextFontStyle", fontStyleMap, style))
+    {
+        return nullptr;
+    }
+
+    if(!parseEnumField<QFont::Weight>(is, "TextFontWeight", fontWeightMap, weight))
+    {
+        return nullptr;
+    }
+    QFont* f = new QFont(QString(textFontFamily.c_str()), textPointSize);
+    f->setStyle(style);
+    f->setWeight(weight);
+    return f;
+}
+
+/*=======================================================================================
+ * LINE CLASS FUNCTIONS
+ * =====================================================================================*/
+bool Line::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 4)
         {
-            bool validShape = true;
-            // in here read in the shape stuffs from the stream
-            IntVecField ivf;
-
-            if(parseIntVectorField(is, "ShapeDimensions", ivf))
-            {
-                if(ivf.second.size() == 4)
-                {
-                    x1 = ivf.second[0];
-                    y1 = ivf.second[1];
-                    x2 = ivf.second[2];
-                    y2 = ivf.second[3];
-                }
-                else
-                {
-                    validShape = false;
-                }
-            }
-            else
-            {
-                validShape = false;
-            }
-
+            x1 = ivf.second[0];
+            y1 = ivf.second[1];
+            x2 = ivf.second[2];
+            y2 = ivf.second[3];
 
             pen = serializePen(is);
-            return validShape && pen != nullptr;
-        }
-
-        virtual ~Line() {}
-    protected:
-        int x1, y1, x2, y2;
-
-
-    };
-
-class Polyline : public Shape
-{
-public:
-    virtual ~Polyline() {}
-    Polyline(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
-    {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
-        {
-            if(ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
-            {
-                points = ivf.second;
-            }
-            else
-            {
-                validShape = false;
-            }
-
-            pen = serializePen(is);
-            return validShape && pen != nullptr;
-        }
-    }
-protected:
-    std::vector<int> points;
-};
-
-class Polygon : public Shape
-{
-public:
-    virtual ~Polygon() {}
-    Polygon(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
-    {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
-        {
-            if(ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
-            {
-                points = ivf.second;
-            }
-            else
-            {
-                validShape = false;
-            }
         }
         else
         {
             validShape = false;
         }
-
-        pen = serializePen(is);
-        brush = serializeBrush(is);
-        return validShape && pen != nullptr && brush != nullptr;
     }
-protected:
-    std::vector<int> points;
-};
-
-class Rectangle : public Shape
-{
-public:
-    Rectangle(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
+    else
     {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr;
+}
+
+
+/*=======================================================================================
+ * POLYLINE CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Polyline::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
         {
-            if(ivf.second.size() == 4)
-            {
-                x = ivf.second[0];
-                y = ivf.second[1];
-                w = ivf.second[2];
-                h = ivf.second[3];
-            }
-            else
-            {
-                validShape = false;
-            }
+            points = ivf.second;
+
+            pen = serializePen(is);
         }
         else
         {
             validShape = false;
         }
-
-        pen = serializePen(is);
-        brush = serializeBrush(is);
-        return validShape && pen != nullptr && brush != nullptr;
+    }
+    else
+    {
+        validShape = false;
     }
 
-    virtual ~Rectangle() {}
-protected:
-    int x, y, w, h;
-};
+    return validShape && pen != nullptr;
+}
 
-class Square : public Shape
+/*=======================================================================================
+ * POLYGON CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Polygon::serializeShape(istream& is)
 {
-public:
-    Square(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
     {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
+        if(ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
         {
-            if(ivf.second.size() == 3)
-            {
-                x = ivf.second[0];
-                y = ivf.second[1];
-                w = ivf.second[2];
-            }
-            else
-            {
-                validShape = false;
-            }
+            points = ivf.second;
 
             pen = serializePen(is);
             brush = serializeBrush(is);
-            return validShape && pen != nullptr && brush != nullptr;
+        }
+        else
+        {
+            validShape = false;
         }
     }
-    virtual ~Square() {}
-protected:
-    int x, y, w;
-};
-
-class Ellipse : public Shape
-{
-public:
-    Ellipse(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
+    else
     {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+/*=======================================================================================
+ * RECTANGLE CLASS FUNCTIONS
+ * =====================================================================================*/
+
+
+bool Rectangle::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 4)
         {
-            if(ivf.second.size() == 4)
-            {
-                x = ivf.second[0];
-                y = ivf.second[1];
-                w = ivf.second[2];
-                h = ivf.second[3];
-            }
-            else
-            {
-                validShape = false;
-            }
+            x = ivf.second[0];
+            y = ivf.second[1];
+            w = ivf.second[2];
+            h = ivf.second[3];
 
             pen = serializePen(is);
             brush = serializeBrush(is);
-            return validShape && pen != nullptr && brush != nullptr;
+        }
+        else
+        {
+            validShape = false;
         }
     }
-    virtual ~Ellipse() {}
-protected:
-    int x, y, w, h;
-};
-
-class Circle : public Shape
-{
-public:
-    Circle(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
+    else
     {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+/*=======================================================================================
+ * SQUARE CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Square::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 3)
         {
-            if(ivf.second.size() == 3)
-            {
-                x = ivf.second[0];
-                y = ivf.second[1];
-                r = ivf.second[2];
-            }
-            else
-            {
-                validShape = false;
-            }
+            x = ivf.second[0];
+            y = ivf.second[1];
+            w = ivf.second[2];
 
             pen = serializePen(is);
             brush = serializeBrush(is);
-            return validShape && pen != nullptr && brush != nullptr;
+        }
+        else
+        {
+            validShape = false;
         }
     }
-    virtual ~Circle() {}
-protected:
-    int x, y, r;
-};
-
-class Text : public Shape
-{
-public:
-    Text(int id) : Shape(id) {}
-    virtual bool serializeShape(istream& is) override
+    else
     {
-        bool validShape = true;
-        // in here read in the shape stuffs from the stream
-        IntVecField ivf;
-        if(parseIntVectorField(is, "ShapeDimensions", ivf))
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+/*=======================================================================================
+ * ELLIPSE CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Ellipse::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 4)
         {
-            if(ivf.second.size() == 4)
-            {
-                x = ivf.second[0];
-                y = ivf.second[1];
-                w = ivf.second[2];
-                h = ivf.second[3];
-            }
-            else
-            {
-                validShape = false;
-            }
+            x = ivf.second[0];
+            y = ivf.second[1];
+            w = ivf.second[2];
+            h = ivf.second[3];
+
+            pen = serializePen(is);
+            brush = serializeBrush(is);
+        }
+        else
+        {
+            validShape = false;
+        }
+    }
+    else
+    {
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+/*=======================================================================================
+ * CIRCLE CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Circle::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 3)
+        {
+            x = ivf.second[0];
+            y = ivf.second[1];
+            r = ivf.second[2];
+
+            pen = serializePen(is);
+            brush = serializeBrush(is);
+        }
+        else
+        {
+            validShape = false;
+        }
+    }
+    else
+    {
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+
+/*=======================================================================================
+ * TEXT CLASS FUNCTIONS
+ * =====================================================================================*/
+
+bool Text::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if(parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if(ivf.second.size() == 4)
+        {
+            x = ivf.second[0];
+            y = ivf.second[1];
+            w = ivf.second[2];
+            h = ivf.second[3];
 
             StringField sf;
             if(parseStringField(is, "TextString", sf))
@@ -631,83 +547,87 @@ public:
             }
 
             font = serializeFont(is);	//implement please
-            return validShape;
+        }
+        else
+        {
+            validShape = false;
         }
     }
-protected:
-    Qt::AlignmentFlag align;
-    Qt::GlobalColor textColor;
-    string textStr;
-    string textFont;
-    int x, y, w, h;
-};
+    else
+    {
+        validShape = false;
+    }
 
-class ShapeFactory	//reads in shape type, based on type allocate the correct type of shape.
+    return validShape && font != nullptr;
+}
+
+/*=======================================================================================
+ * SHAPE FACTORY CLASS FUNCTIONS
+ * =====================================================================================*/
+
+Shape* ShapeFactory::createFromStream(istream& is)	//factory method
 {
-public:
-        Shape* createFromStream(istream& is)	//factory method
+    SHAPE_TYPES t;
+    Shape* s = nullptr;
+
+    int shapeID;
+
+    IntVecField shapeIdFeild;
+    if(parseIntVectorField(is, "ShapeId", shapeIdFeild))
+    {
+        shapeID = shapeIdFeild.second[0];	//TODO: later make sure size is 1
+    }
+
+    StringField shapeType;
+    if(parseStringField(is, "ShapeType", shapeType))
+    {
+        if(shapeType.second.compare("Line") == 0)
         {
-            SHAPE_TYPES t;
-            Shape* s = nullptr;
-
-            int shapeID;
-
-            IntVecField shapeIdFeild;
-            if(parseIntVectorField(is, "ShapeId", shapeIdFeild))
-            {
-                shapeID = shapeIdFeild.second[0];	//TODO: later make sure size is 1
-            }
-
-            StringField shapeType;
-            if(parseStringField(is, "ShapeType", shapeType))
-            {
-                if(shapeType.second.compare("Line") == 0)
-                {
-                    s = new Line(shapeID);
-                }
-                else if (shapeType.second.compare("Polyline") == 0)
-                {
-                    s = new Polyline(shapeID);
-                }
-                else if (shapeType.second.compare("Polygon") == 0)
-                {
-                    s = new Polygon(shapeID);
-                }
-                else if (shapeType.second.compare("Rectangle") == 0)
-                {
-                    s = new Rectangle(shapeID);
-                }
-                else if (shapeType.second.compare("Square") == 0)
-                {
-                    s = new Square(shapeID);
-                }
-                else if (shapeType.second.compare("Ellipse") == 0)
-                {
-                    s = new Ellipse(shapeID);
-                }
-                else if(shapeType.second.compare("Circle") == 0)
-                {
-                    s = new Circle(shapeID);
-                }
-                else if (shapeType.second.compare("Text") == 0)
-                {
-                    s = new Text(shapeID);
-                }
-
-                if(!s->serializeShape(is))
-                {
-                    delete s;
-                    return nullptr;
-                }
-            }
-            else
-            {
-                return nullptr;
-            }
-            return s;
+            s = new Line(shapeID);
         }
-};
+        else if (shapeType.second.compare("Polyline") == 0)
+        {
+            s = new Polyline(shapeID);
+        }
+        else if (shapeType.second.compare("Polygon") == 0)
+        {
+            s = new Polygon(shapeID);
+        }
+        else if (shapeType.second.compare("Rectangle") == 0)
+        {
+            s = new Rectangle(shapeID);
+        }
+        else if (shapeType.second.compare("Square") == 0)
+        {
+            s = new Square(shapeID);
+        }
+        else if (shapeType.second.compare("Ellipse") == 0)
+        {
+            s = new Ellipse(shapeID);
+        }
+        else if(shapeType.second.compare("Circle") == 0)
+        {
+            s = new Circle(shapeID);
+        }
+        else if (shapeType.second.compare("Text") == 0)
+        {
+            s = new Text(shapeID);
+        }
 
+        if(!s->serializeShape(is))
+        {
+            delete s;
+            return nullptr;
+        }
+    }
+    else
+    {
+        return nullptr;
+    }
+    return s;
+}
+
+//commented bc maybe dont need?
 #if 0
 vector<Shape*> parse(string fileName);
 
