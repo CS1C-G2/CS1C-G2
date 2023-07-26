@@ -15,7 +15,7 @@ double Ellipse::area() {
     return pi * radius1 * radius2;
 }
 double Ellipse::perimeter() {
-    return 0;
+    return  M_PI * (3 * (radius1 + radius2) - sqrt((3 * radius1 + radius2) * (radius1 + 3 * radius2)));
 }
 void Ellipse::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
