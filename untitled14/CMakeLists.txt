@@ -24,10 +24,10 @@ set(PROJECT_SOURCES
         ellipse.h
         line.cpp
         line.h
-        polyline.cpp
-        polyline.h
         polygon.cpp
         polygon.h
+        polyline.cpp
+        polyline.h
         rectangle.cpp
         rectangle.h
         square.cpp
