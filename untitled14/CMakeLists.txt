@@ -18,6 +18,22 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         shape.h
+        circle.cpp
+        circle.h
+        ellipse.cpp
+        ellipse.h
+        line.cpp
+        line.h
+        polygon.cpp
+        polygon.h
+        polyline.cpp
+        polyline.h
+        rectangle.cpp
+        rectangle.h
+        square.cpp
+        square.h
+        text.cpp
+        text.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

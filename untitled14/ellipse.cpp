@@ -15,7 +15,7 @@ double Ellipse::area() {
     return pi * radius1 * radius2;
 }
 double Ellipse::perimeter() {
-    return 0;
+    return  M_PI * (3 * (radius1 + radius2) - sqrt((3 * radius1 + radius2) * (radius1 + 3 * radius2)));
 }
 QRectF Ellipse::boundingRect() const {
     return QRectF(x, y, radius1 * 2, radius2 * 2);
