@@ -240,7 +240,7 @@ void MainWindow::createLine() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
 
-    graphicsScene->clear();
+
     // Create the Line object
     Line* line = new Line(id, x, y, x1, y1, pen);
 
@@ -268,7 +268,7 @@ void MainWindow::createPolyline() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
 
-    graphicsScene->clear();
+
     // Create the Polyline object
     Polyline* polyline = new Polyline(id, inputX, inputY, pen);
 
@@ -303,7 +303,7 @@ void MainWindow::createPolygon() {
 
     QBrush* brush = new QBrush(brushColor, brushStyle);
 
-    graphicsScene->clear();
+
     // Create the Polygon object
     Polygon* polygon = new Polygon(id, inputX, inputY, pen, brush);
 
@@ -342,7 +342,7 @@ void MainWindow::createRectangle() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
     QBrush* brush = new QBrush(brushColor, brushStyle);
-    graphicsScene->clear();
+
     // Create the Rectangle object
     Rectangle* rect = new Rectangle(id, x, y, length, width, pen, brush);
 
@@ -379,7 +379,7 @@ void MainWindow::createSquare() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
     QBrush* brush = new QBrush(brushColor, brushStyle);
-    graphicsScene->clear();
+
     // Create the Square object
     Square* square = new Square(id, x, y, length, pen, brush);
 
@@ -418,7 +418,7 @@ void MainWindow::createEllipse() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
     QBrush* brush = new QBrush(brushColor, brushStyle);
-    graphicsScene->clear();
+
     // Create the Ellipse object
     Ellipse* ellipse = new Ellipse(id, x, y, radius1, radius2, pen, brush);
 
@@ -455,7 +455,7 @@ void MainWindow::createCircle() {
     pen->setCapStyle(penCapStyle);
     pen->setJoinStyle(penJoinStyle);
     QBrush* brush = new QBrush(brushColor, brushStyle);
-    graphicsScene->clear();
+
     // Create the Circle object
     Circle* circle = new Circle(id, x, y, radius, pen, brush);
 
@@ -499,7 +499,7 @@ void MainWindow::createText() {
     QFont* font = new QFont(family, pointSize, weight);
     font->setStyle(fontStyle);
 
-    graphicsScene->clear();
+
     // Create the Text object
     Text* text = new Text(id, x, y, width, length, drawText, font, pen, textAlignment);
 
