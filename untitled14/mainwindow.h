@@ -13,6 +13,7 @@
 #include <QPushButton>
 
 #include "vector.cpp"
+#include "Shape.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +26,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void addShape(Shape* shape);
+    void removeShape(int id, int comboBoxIndex);
+    void moveShape(int id, int x, int y);
 
 public slots:
     void startRenderingArea();
@@ -49,6 +53,8 @@ private slots:
     void addPolylinePoint();
     void addPolygonPoint();
     void clearTestimonials();
+    void onDeleteShape();
+    void onMoveShape();
 
 private:
     void emptyInputVectors();
@@ -65,6 +71,8 @@ private:
 
     myStd::vector<int> inputX;
     myStd::vector<int> inputY;
+    myStd::vector<Shape*> shapes;
+    int id {0};
 };
 
 #endif // MAINWINDOW_H

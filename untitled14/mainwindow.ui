@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>982</width>
-    <height>799</height>
+    <width>1012</width>
+    <height>814</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>21</x>
+      <x>0</x>
       <y>0</y>
       <width>261</width>
-      <height>731</height>
+      <height>561</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Line">
      <attribute name="title">
@@ -3770,7 +3770,7 @@
         <x>0</x>
         <y>0</y>
         <width>254</width>
-        <height>701</height>
+        <height>531</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -4390,8 +4390,8 @@
    <widget class="QPushButton" name="CreateShape">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>730</y>
+      <x>0</x>
+      <y>560</y>
       <width>260</width>
       <height>24</height>
      </rect>
@@ -4410,16 +4410,125 @@
      </rect>
     </property>
    </widget>
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>590</y>
+      <width>254</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <widget class="QLabel" name="ID">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>49</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ID:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="id">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>19</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="y_8">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>57</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="x_8">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>57</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Y_8">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>60</y>
+       <width>10</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="X_8">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Move">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>100</y>
+       <width>191</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Move</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Delete">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>140</y>
+       <width>191</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
+   </widget>
    <zorder>CreateShape</zorder>
    <zorder>graphicsView</zorder>
    <zorder>tabWidget</zorder>
+   <zorder>widget</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>982</width>
+     <width>1012</width>
      <height>22</height>
     </rect>
    </property>

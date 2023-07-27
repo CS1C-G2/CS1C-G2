@@ -36,6 +36,81 @@ MainWindow::MainWindow(QWidget *parent)
 
 } // MainWindow
 
+void MainWindow::addShape(Shape* shape) {
+    shapes.push_back(shape);
+
+    QString label = QString::number(id++);
+    switch (shape->getType()) {
+    case 0:
+        label += ". Line";
+        break;
+
+    case 1:
+        label += ". Polyline";
+        break;
+
+    case 2:
+        label += ". Polygon";
+        break;
+
+    case 3:
+        label += ". Rectangle";
+        break;
+
+    case 4:
+        label += ". Square";
+        break;
+
+    case 5:
+        label += ". Ellipse";
+        break;
+
+    case 6:
+        label += ". Circle";
+        break;
+
+    case 7:
+        label += ". Text";
+        break;
+
+    default:
+        break;
+    }
+
+    ui->id->addItem(label);
+}
+
+void MainWindow::removeShape(int id, int comboBoxIndex) {
+    int index = -1;
+    for (int i = 0; i < shapes.size(); ++i) {
+        if (id == shapes[i]->getId()) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != -1) {
+        delete shapes[index]; // remove if .erase deallocates for us
+        shapes.erase(shapes.begin() + index);
+    }
+
+    ui->id->removeItem(comboBoxIndex);
+}
+
+void MainWindow::moveShape(int id, int x, int y) {
+    int index = -1;
+    for (int i = 0; i < shapes.size(); ++i) {
+        if (id == shapes[i]->getId()) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != -1) {
+        shapes[index]->move(x, y);
+    }
+}
+
 // this right here starts all the rendering stuff and the menubar
 void MainWindow::startRenderingArea() {
     // Create the graphics view and scene
@@ -43,7 +118,9 @@ void MainWindow::startRenderingArea() {
     graphicsScene = new QGraphicsScene(this);
     // Set the scene on the view
     graphicsView->setScene(graphicsScene);
-
+    graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+    graphicsView->setTransformationAnchor(QGraphicsView::NoAnchor);
+    graphicsView->setRenderHint(QPainter::SmoothPixmapTransform);
 
 } // startRenderingArea
 
@@ -93,6 +170,8 @@ void MainWindow::onShapeCreate() {
     connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
     connect(ui->AddPoint, &QPushButton::clicked, this, &MainWindow::addPolylinePoint);
     connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
+    connect(ui->Delete, &QPushButton::clicked, this, &MainWindow::onDeleteShape);
+    connect(ui->Move, &QPushButton::clicked, this, &MainWindow::onMoveShape);
 } // onShapeCreate
 
 void MainWindow::addPolylinePoint() {
@@ -103,6 +182,40 @@ void MainWindow::addPolylinePoint() {
 void MainWindow::addPolygonPoint() {
     inputX.push_back(ui->x_7->value());
     inputY.push_back(ui->y_7->value());
+}
+
+void MainWindow::onDeleteShape() {
+    int id = 0;
+    QString stringId;
+    QString text = ui->id->currentText();
+    for (int i = 0; i < text.length(); ++i) {
+        if (text[i] != '.') {
+            stringId += text[i];
+        } else {
+            break;
+        }
+    }
+
+    id = stringId.toInt();
+
+    removeShape(id, ui->id->currentIndex());
+}
+
+void MainWindow::onMoveShape() {
+    int id = 0;
+    QString stringId;
+    QString text = ui->id->currentText();
+    for (int i = 0; i < text.length(); ++i) {
+        if (text[i] != '.') {
+            stringId += text[i];
+        } else {
+            break;
+        }
+    }
+
+    id = stringId.toInt();
+
+    moveShape(id, ui->x_8->value(), ui->y_8->value());
 }
 
 void MainWindow::createLine() {
@@ -129,13 +242,14 @@ void MainWindow::createLine() {
 
     graphicsScene->clear();
     // Create the Line object
-    Line* line = new Line(3, x, y, x1, y1, pen);
+    Line* line = new Line(id, x, y, x1, y1, pen);
 
     // Add the line to the QGraphicsScene
     graphicsScene->addItem(line);
 
     // Call the draw function to render the line
     line->draw();
+    addShape(line);
 }
 
 void MainWindow::createPolyline() {
@@ -156,7 +270,7 @@ void MainWindow::createPolyline() {
 
     graphicsScene->clear();
     // Create the Polyline object
-    Polyline* polyline = new Polyline(5, inputX, inputY, pen);
+    Polyline* polyline = new Polyline(id, inputX, inputY, pen);
 
     // Add the polyline to the QGraphicsScene
     graphicsScene->addItem(polyline);
@@ -164,6 +278,7 @@ void MainWindow::createPolyline() {
     // Call the draw function to render the polyline
     polyline->draw();
     emptyInputVectors();
+    addShape(polyline);
 }
 
 void MainWindow::createPolygon() {
@@ -190,7 +305,7 @@ void MainWindow::createPolygon() {
 
     graphicsScene->clear();
     // Create the Polygon object
-    Polygon* polygon = new Polygon(6, inputX, inputY, pen, brush);
+    Polygon* polygon = new Polygon(id, inputX, inputY, pen, brush);
 
     // Add the polyline to the QGraphicsScene
     graphicsScene->addItem(polygon);
@@ -198,6 +313,7 @@ void MainWindow::createPolygon() {
     // Call the draw function to render the polygon
     polygon->draw();
     emptyInputVectors();
+    addShape(polygon);
 }
 
 void MainWindow::createRectangle() {
@@ -228,13 +344,14 @@ void MainWindow::createRectangle() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Rectangle object
-    Rectangle* rect = new Rectangle(2, x, y, length, width, pen, brush);
+    Rectangle* rect = new Rectangle(id, x, y, length, width, pen, brush);
 
     // Add the rectangle to the QGraphicsScene
     graphicsScene->addItem(rect);
 
     // Call the draw function to render the rectangle
     rect->draw();
+    addShape(rect);
 }
 
 void MainWindow::createSquare() {
@@ -264,13 +381,14 @@ void MainWindow::createSquare() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Square object
-    Square* square = new Square(1, x, y, length, pen, brush);
+    Square* square = new Square(id, x, y, length, pen, brush);
 
     // Add the square to the QGraphicsScene
     graphicsScene->addItem(square);
 
     // Call the draw function to render the square
     square->draw();
+    addShape(square);
 
 } // createSquare
 
@@ -302,13 +420,14 @@ void MainWindow::createEllipse() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Ellipse object
-    Ellipse* ellipse = new Ellipse(4, x, y, radius1, radius2, pen, brush);
+    Ellipse* ellipse = new Ellipse(id, x, y, radius1, radius2, pen, brush);
 
     // Add the ellipse to the QGraphicsScene
     graphicsScene->addItem(ellipse);
 
     // Call the draw function to render the ellipse
     ellipse->draw();
+    addShape(ellipse);
 }
 
 void MainWindow::createCircle() {
@@ -338,13 +457,14 @@ void MainWindow::createCircle() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Circle object
-    Circle* circle = new Circle(5, x, y, radius, pen, brush);
+    Circle* circle = new Circle(id, x, y, radius, pen, brush);
 
     // Add the circle to the QGraphicsScene
     graphicsScene->addItem(circle);
 
     // Call the draw function to render the circle
     circle->draw();
+    addShape(circle);
 }
 
 void MainWindow::createText() {
@@ -381,13 +501,14 @@ void MainWindow::createText() {
 
     graphicsScene->clear();
     // Create the Text object
-    Text* text = new Text(7, x, y, width, length, drawText, font, pen, textAlignment);
+    Text* text = new Text(id, x, y, width, length, drawText, font, pen, textAlignment);
 
     // Add the text to the QGraphicsScene
     graphicsScene->addItem(text);
 
     // Call the draw function to render the circle
     text->draw();
+    addShape(text);
 }
 
 void MainWindow::createMenus() {
