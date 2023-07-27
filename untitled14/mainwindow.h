@@ -29,17 +29,18 @@ public:
     void addShape(Shape* shape);
     void removeShape(int id, int comboBoxIndex);
     void moveShape(int id, int x, int y);
+    void updateUIForCurrentUser();
 
 public slots:
     void startRenderingArea();
-    void createShape();
+    void createShape(User* user);
 
 private slots:
     void createMenus();
     void onContactUs();
     void onAbout();
     void onHelp();
-    void onShapeCreate();
+    void onShapeCreate(User* currentUser);
     void onAddTestimonial();
     void onViewTestimonials();
     void createLine();
@@ -55,6 +56,7 @@ private slots:
     void clearTestimonials();
     void onDeleteShape();
     void onMoveShape();
+    void onLoginClicked();
 
 private:
     void emptyInputVectors();
@@ -68,6 +70,9 @@ private:
     QGraphicsView *graphicsView;
     QGraphicsScene *graphicsScene;
     QPushButton* createButton;
+    QPushButton* loginButton;
+
+    User *currentUser;
 
     myStd::vector<int> inputX;
     myStd::vector<int> inputY;
