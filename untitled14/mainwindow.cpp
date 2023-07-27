@@ -451,12 +451,11 @@ void MainWindow::onAbout() {
 
 } // onAbout
 
-<<<<<<< HEAD
 void MainWindow::emptyInputVectors() {
     inputX = {};
     inputY = {};
 }
-=======
+
 void MainWindow::onAddTestimonial() {
 
     QDialog *testimonialDialog = new QDialog(this);
@@ -523,7 +522,6 @@ void MainWindow::clearTestimonials() {
     ofs.open("testimonials.txt", std::ofstream::out | std::ofstream::trunc);
     ofs.close();
 }   // clearTestimonials
->>>>>>> 53722ec6fb74126175a93622dc83d812cefb9ee6
 
 // deleting everything
 MainWindow::~MainWindow() {
