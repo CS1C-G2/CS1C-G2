@@ -1,0 +1,106 @@
+Script started on Wed Jul 26 23:13:00 2023
+Restored session: Wed Jul 26 23:12:54 PDT 2023
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                            ]7;file://Elijahs-MBP.lan/Users/elijah/CS1C/GP/vectorDriver[0m[27m[24m[Jelijah@Elijahs-MBP vectorDriver % [K[?2004hexitleaks --atExit -- ./vectorDriver[32Dexit                            [28D./hw13ls -l make all[8Dls -l   date exitleaks --atExit -- ./hw12[24D./hw12                  [18Dls -l make all[8Dls -l   date exit./hw11ls -l make all[8Dls -l   date exit./hw10ls -l make all[8Dls -l   date exitleaks --atExit -- ./hw10[24Dls -l                   [19Dmake all[8Dls -l   date exitmake all[8Dls -l   date exit./hw09EC[8Dmake all[8Dls -l   date exit./hw09ls -l make all[8Dls -l   date exitleaks --atExit -- ./hw08[24Dls -l                   [19Dmake all[8Dls -l   date exit./hw07ls -l make all[8Dls -l   date exit./hw07ls -l date exitleaks --atExit -- ./hw07[24Dls -l                   [19Dmake all[8Dls -l   date exitleaks --atExit -- ./hw07[24Dls -l                   [19Dmake all[8Dls -l   date exit./hw06ls -l make all[8Dls -l   date exitmake all[8Dls -l   date exit./hw05ls -l make all[8Dls -l   make all[8Dls -l   ./hw05exit  datels -lmake all[8Dexit    datels -lmake all[8Dls -l   ./hw06exit  datels -lmake all[8Dls -l   leaks --atExit -- ./hw07[24Dexit                    [20Ddatels -lmake all[8Dls -l   leaks --atExit -- ./hw07[24Dexit                    [20Ddatels -l./hw07exit  datels -lmake all[8Dls -l   ./hw07exit  datels -lmake all[8Dls -l   leaks --atExit -- ./hw08[24Dexit                    [20Ddatels -lmake all[8Dls -l   ./hw09exit  datels -lmake all[8D./hw09EC[8Dexit    datels -lmake all[8Dexit    datels -lmake all[8Dls -l   leaks --atExit -- ./hw10[24Dexit                    [20Ddatels -lmake all[8Dls -l   ./hw10exit  datels -lmake all[8Dls -l   ./hw11exit  datels -lmake all[8Dls -l   ./hw12leaks --atExit -- ./hw12[24Dexit                    [20Ddatels -lmake all[8Dls -l   ./hw13exit  leaks --atExit -- ./vectorDriver[32Dexit                            [28D    [7mg++ -std=c++14 -o main main.cpp[27m[31D[27mg[27m+[27m+[27m [27m-[27ms[27mt[27md[27m=[27mc[27m+[27m+[27m1[27m4[27m [27m-[27mo[27m [27mm[27ma[27mi[27mn[27m [27mm[27ma[27mi[27mn[27m.[27mc[27mp[27mp.cpp .cpp .cpp .cpp v.cppe.cppc.cppt.cppp.cppr.cpp.cpp .cpp o.cppr.cppD.cppr.cppi.cppv.cppe.cppr.cpp[P[17C [18D[P[17C [18D[P[17C [18D[P[17C [18Dv vectorDriver.cpp[17De vectorDriver.cpp[17Dc vectorDriver.cpp[17Dt vectorDriver.cpp[17Dp vectorDriver.cpp[17Do vectorDriver.cpp[17Dr vectorDriver.cpp[17D[P[17C [18D[P[17C [18D[P[17C [18Do vectorDriver.cpp[17Dr vectorDriver.cpp[17DD vectorDriver.cpp[17Dr vectorDriver.cpp[17Di vectorDriver.cpp[17Dv vectorDriver.cpp[17De vectorDriver.cpp[17Dr vectorDriver.cpp[17D[?2004l
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                            ]7;file://Elijahs-MBP.lan/Users/elijah/CS1C/GP/vectorDriver[0m[27m[24m[Jelijah@Elijahs-MBP vectorDriver % [K[?2004hg++ -std=c++14 -o vectorDriver vectorDriver.cpp[47Dexit                                           [43Dleaks --atExit -- ./vectorDriver[32Dexit                            [28Dleaks --atExit -- ./vectorDriver[?2004l
+vectorDriver(86894) MallocStackLogging: could not tag MSL-related memory as no_footprint, so those pages will be included in process footprint - (null)
+vectorDriver(86894) MallocStackLogging: recording malloc and VM allocation stacks using lite mode
+Testing push_back and copy assignment
+Vector 1 at index 0: 0
+Vector 2 at index 0: 0
+Vector 1 at index 1: 1
+Vector 2 at index 1: 1
+Vector 1 at index 2: 2
+Vector 2 at index 2: 2
+Vector 1 at index 3: 3
+Vector 2 at index 3: 3
+Vector 1 at index 4: 4
+Vector 2 at index 4: 4
+Vector 1 at index 5: 5
+Vector 2 at index 5: 5
+Vector 1 at index 6: 6
+Vector 2 at index 6: 6
+Vector 1 at index 7: 7
+Vector 2 at index 7: 7
+Vector 1 at index 8: 8
+Vector 2 at index 8: 8
+Vector 1 at index 9: 9
+Vector 2 at index 9: 9
+
+Testing push_back and copy constructor
+Vector 1 at index 0: 0
+Vector 2 at index 0: 0
+Vector 1 at index 1: 1
+Vector 2 at index 1: 1
+Vector 1 at index 2: 2
+Vector 2 at index 2: 2
+Vector 1 at index 3: 3
+Vector 2 at index 3: 3
+Vector 1 at index 4: 4
+Vector 2 at index 4: 4
+Vector 1 at index 5: 5
+Vector 2 at index 5: 5
+Vector 1 at index 6: 6
+Vector 2 at index 6: 6
+Vector 1 at index 7: 7
+Vector 2 at index 7: 7
+Vector 1 at index 8: 8
+Vector 2 at index 8: 8
+Vector 1 at index 9: 9
+Vector 2 at index 9: 9
+
+Testing move assignment
+Assignee values pre-copy: 
+Assigner values pre-copy: 
+0.5
+1.5
+2.5
+3.5
+4.5
+Assignee values post-copy: 
+0.5
+1.5
+2.5
+3.5
+4.5
+Assigner values post-copy: 
+
+Testing that it works with different types (string)
+A
+B
+C
+D
+E
+F
+Process 86894 is not debuggable. Due to security restrictions, leaks can only show or save contents of readonly memory of restricted processes.
+
+Process:         vectorDriver [86894]
+Path:            /Users/USER/*/vectorDriver
+Load Address:    0x1001cc000
+Identifier:      vectorDriver
+Version:         0
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  leaks [86893]
+
+Date/Time:       2023-07-26 23:13:55.065 -0700
+Launch Time:     2023-07-26 23:13:54.743 -0700
+OS Version:      macOS 13.1 (22C65)
+Report Version:  7
+Analysis Tool:   /usr/bin/leaks
+
+Physical footprint:         3153K
+Physical footprint (peak):  3153K
+Idle exit: untracked
+----
+
+leaks Report Version: 4.0, multi-line stacks
+Process 86894: 224 nodes malloced for 17 KB
+Process 86894: 0 leaks for 0 total leaked bytes.
+
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                            ]7;file://Elijahs-MBP.lan/Users/elijah/CS1C/GP/vectorDriver[0m[27m[24m[Jelijah@Elijahs-MBP vectorDriver % [K[?2004heexit[?2004l
+
+Saving session...
+...saving history...truncating history files...
+...completed.
+
+Script done on Wed Jul 26 23:13:59 2023
