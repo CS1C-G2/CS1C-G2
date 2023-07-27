@@ -742,6 +742,7 @@ void MainWindow::clearTestimonials() {
 // deleting everything
 MainWindow::~MainWindow() {
     delete ui;
+    delete currentUser;
     delete contactAction;
     delete helpAction;
     delete aboutAction;
