@@ -7,8 +7,8 @@ void Line::draw() {
     update();
 }
 void Line::move(int x, int y) {
-    int xDiff = x1 - x;
-    int yDiff = y1 - y;
+    int xDiff = x - x1;
+    int yDiff = y - y1;
     x1 = x;
     y1 = y;
     x2 += xDiff;
