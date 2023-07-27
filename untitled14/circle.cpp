@@ -1,6 +1,6 @@
 #include "circle.h"
 Circle::Circle(int id, int x, int y, int radius, QPen* pen, QBrush* brush) :
-    Shape(id), x{x}, y{y}, radius{radius}, pen{pen}, brush{brush} { }
+    Shape(id, CIRCLE), x{x}, y{y}, radius{radius}, pen{pen}, brush{brush} { }
 void Circle::draw() {
     update();
 }

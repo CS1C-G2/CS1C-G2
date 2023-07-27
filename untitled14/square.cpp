@@ -1,6 +1,6 @@
 #include "square.h"
 Square::Square(int id, int x, int y, int length, QPen* pen, QBrush* brush) :
-    Shape(id), x{x}, y{y}, length{length}, pen{pen}, brush{brush} { }
+    Shape(id, SQUARE), x{x}, y{y}, length{length}, pen{pen}, brush{brush} { }
 void Square::draw() {
     update();
 }

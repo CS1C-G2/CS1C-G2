@@ -1,6 +1,6 @@
 #include "polygon.h"
 Polygon::Polygon(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen, QBrush* brush) :
-    Shape(id), x{x}, y{y}, pen{pen}, brush{brush} { }
+    Shape(id, POLYGON), x{x}, y{y}, pen{pen}, brush{brush} { }
 void Polygon::draw() {
     update();
 }

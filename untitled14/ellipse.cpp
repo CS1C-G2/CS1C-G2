@@ -1,6 +1,6 @@
 #include "ellipse.h"
 Ellipse::Ellipse(int id, int x, int y, int radius1, int radius2,
-                 QPen* pen, QBrush* brush) : Shape(id), x{x}, y{y},
+                 QPen* pen, QBrush* brush) : Shape(id, ELLIPSE), x{x}, y{y},
     radius1{radius1}, radius2{radius2}, pen{pen},
     brush{brush} { }
 void Ellipse::draw() {

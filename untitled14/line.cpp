@@ -1,7 +1,7 @@
 #include "line.h"
 
 Line::Line(int id, int x1, int y1, int x2, int y2, QPen* pen) :
-    Shape(id), x1{x1}, y1{y1}, x2{x2}, y2{y2}, pen{pen} { }
+    Shape(id, LINE), x1{x1}, y1{y1}, x2{x2}, y2{y2}, pen{pen} { }
 Line::~Line() {delete pen;}
 void Line::draw() {
     update();

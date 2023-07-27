@@ -1,6 +1,6 @@
 #include "polyline.h"
 Polyline::Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen) :
-    Shape(id), x{x}, y{y}, pen{pen} { }
+    Shape(id, POLYLINE), x{x}, y{y}, pen{pen} { }
 void Polyline::draw() {
     update();
 }

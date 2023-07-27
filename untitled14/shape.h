@@ -27,7 +27,7 @@ class Shape
 public:
     Shape() {id = 0;}
 
-    Shape(int id) {this->id = id;}
+    Shape(int id, SHAPE_TYPES type): type{type} {this->id = id;}
 
     virtual ~Shape() = default;
 

@@ -1,6 +1,6 @@
 #include "text.h"
 Text::Text(int id, int x1, int y1, int w, int l, QString textString, QFont* font, QPen* pen, Qt::AlignmentFlag textAlignment) :
-    Shape(id), x1{x1}, y1{y1}, w{w}, l{l}, textString{textString}, font{font}, pen{pen}, textAlignment{textAlignment} { }
+    Shape(id, TEXT), x1{x1}, y1{y1}, w{w}, l{l}, textString{textString}, font{font}, pen{pen}, textAlignment{textAlignment} { }
 Text::~Text() {}
 
 void Text::draw() {

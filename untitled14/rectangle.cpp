@@ -1,6 +1,6 @@
 #include "rectangle.h"
 Rectangle::Rectangle(int id, int x, int y, int length, int width, QPen* pen, QBrush* brush) :
-    Shape(id), x{x}, y{y}, length{length}, width{width}, pen{pen}, brush{brush} { }
+    Shape(id, RECTANGLE), x{x}, y{y}, length{length}, width{width}, pen{pen}, brush{brush} { }
 void Rectangle::draw() {
     update();
 }
