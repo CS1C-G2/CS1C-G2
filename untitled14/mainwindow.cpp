@@ -11,6 +11,7 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QMessageBox>
+#include <math.h> // pow
 
 #include "line.h"
 #include "polyline.h"
@@ -474,7 +475,14 @@ void MainWindow::createText() {
     int length = ui->length_5->value();
     int width = ui->width_5->value();
     QString drawText = ui->textValue_5->toPlainText();
-    Qt::AlignmentFlag textAlignment = static_cast<Qt::AlignmentFlag>(ui->textAlignmentValue_5->currentIndex());  // gotta convert
+    Qt::AlignmentFlag textAlignment = Qt::AlignLeft;
+    if (ui->textAlignmentValue_5->currentIndex() < 2) {
+        textAlignment = static_cast<Qt::AlignmentFlag>(pow(2, ui->textAlignmentValue_5->currentIndex()));
+    } else if (ui->textAlignmentValue_5->currentIndex() < 4) {
+         textAlignment = static_cast<Qt::AlignmentFlag>(pow(2, ui->textAlignmentValue_5->currentIndex() + 3));
+    } else if (ui->textAlignmentValue_5->currentIndex() == 4) {
+         textAlignment = Qt::AlignCenter;
+    }
     QString family = ui->textFontFamilyValue_5->toPlainText();
     int pointSize = ui->textPointSizeValue_5->value();
     QFont::Style fontStyle = static_cast<QFont::Style>(ui->textFontStyleValue_5->currentIndex());
