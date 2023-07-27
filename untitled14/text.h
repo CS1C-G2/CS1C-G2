@@ -36,6 +36,8 @@ public:
 
     void setTextFontWeight(QFont::Weight textFontWeight);
 
+    QRectF boundingRect() const override;
+
 private:
     int x1;
     int y1;

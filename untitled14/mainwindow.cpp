@@ -10,10 +10,13 @@
 #include <QPainterPath>
 
 #include "line.h"
+#include "polyline.h"
+#include "polygon.h"
 #include "rectangle.h"
 #include "square.h"
 #include "ellipse.h"
 #include "circle.h"
+#include "text.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -81,8 +84,19 @@ void MainWindow::onShapeCreate() {
     // Create "Create" button for Square tab
     QPushButton* createButton = ui->CreateShape;
     connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
-
+    connect(ui->AddPoint, &QPushButton::clicked, this, &MainWindow::addPolylinePoint);
+    connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
 } // onShapeCreate
+
+void MainWindow::addPolylinePoint() {
+    inputX.push_back(ui->x_6->value());
+    inputY.push_back(ui->y_6->value());
+}
+
+void MainWindow::addPolygonPoint() {
+    inputX.push_back(ui->x_7->value());
+    inputY.push_back(ui->y_7->value());
+}
 
 void MainWindow::createLine() {
     // getting stuff from the UI
@@ -118,11 +132,65 @@ void MainWindow::createLine() {
 }
 
 void MainWindow::createPolyline() {
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_6->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_6->value();
 
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_6->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_6->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_6->currentIndex() * 64);
+
+    // Create the QPen objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+
+    graphicsScene->clear();
+    // Create the Polyline object
+    Polyline* polyline = new Polyline(5, inputX, inputY, pen);
+
+    // Add the polyline to the QGraphicsScene
+    graphicsScene->addItem(polyline);
+
+    // Call the draw function to render the polyline
+    polyline->draw();
+    emptyInputVectors();
 }
 
 void MainWindow::createPolygon() {
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_7->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_7->value();
 
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_7->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_7->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_7->currentIndex() * 64);
+
+    // Get selected brush color and style from the UI
+    Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue_7->currentIndex() + 2);
+    Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue_7->currentIndex());
+
+    // Create the QPen objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+
+    QBrush* brush = new QBrush(brushColor, brushStyle);
+
+    graphicsScene->clear();
+    // Create the Polygon object
+    Polygon* polygon = new Polygon(6, inputX, inputY, pen, brush);
+
+    // Add the polyline to the QGraphicsScene
+    graphicsScene->addItem(polygon);
+
+    // Call the draw function to render the polygon
+    polygon->draw();
+    emptyInputVectors();
 }
 
 void MainWindow::createRectangle() {
@@ -273,7 +341,46 @@ void MainWindow::createCircle() {
 }
 
 void MainWindow::createText() {
+    // getting stuff from the UI
+    int x = ui->x_5->value();
+    int y = ui->y_5->value();
+    int length = ui->length_5->value();
+    int width = ui->width_5->value();
+    QString drawText = ui->textValue_5->toPlainText();
+    Qt::AlignmentFlag textAlignment = static_cast<Qt::AlignmentFlag>(ui->textAlignmentValue_5->currentIndex());  // gotta convert
+    QString family = ui->textFontFamilyValue_5->toPlainText();
+    int pointSize = ui->textPointSizeValue_5->value();
+    QFont::Style fontStyle = static_cast<QFont::Style>(ui->textFontStyleValue_5->currentIndex());
+    QFont::Weight weight = static_cast<QFont::Weight>(ui->textFontWeightValue_5->currentIndex());
 
+
+    // Get selected pen color and style from the UI
+    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_5->currentIndex() + 2);
+    int penWidth = ui->penWidthValue_5->value();
+
+    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_5->currentIndex());
+    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_5->currentIndex() * 16);
+    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_5->currentIndex() * 64);
+
+    // Create the QPen and QBrush objects
+    QPen* pen = new QPen(penColor);
+    pen->setWidth(penWidth);
+    pen->setStyle(penStyle);
+    pen->setCapStyle(penCapStyle);
+    pen->setJoinStyle(penJoinStyle);
+
+    QFont* font = new QFont(family, pointSize, weight);
+    font->setStyle(fontStyle);
+
+    graphicsScene->clear();
+    // Create the Text object
+    Text* text = new Text(7, x, y, width, length, drawText, font, pen, textAlignment);
+
+    // Add the text to the QGraphicsScene
+    graphicsScene->addItem(text);
+
+    // Call the draw function to render the circle
+    text->draw();
 }
 
 void MainWindow::createMenus() {
@@ -328,6 +435,11 @@ void MainWindow::onAbout() {
     contactDialog->exec();
 
 } // onAbout
+
+void MainWindow::emptyInputVectors() {
+    inputX = {};
+    inputY = {};
+}
 
 // deleting everything
 MainWindow::~MainWindow() {

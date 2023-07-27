@@ -1,6 +1,6 @@
 #include "polyline.h"
-Polyline::Polyline(int id, vector<int> x, vector<int> y, QPen* pen, QBrush* brush) :
-    Shape(id), x{x}, y{y}, pen{pen}, brush{brush} { }
+Polyline::Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen) :
+    Shape(id), x{x}, y{y}, pen{pen} { }
 void Polyline::draw() {
     update();
 }
@@ -28,7 +28,6 @@ void Polyline::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->setPen(*pen);
-    painter->setBrush(*brush);
     const int SIZE = x.size();
     QPointF points[SIZE];
     for(int i = 0; i < SIZE; i++) {

@@ -4,7 +4,7 @@
 class Polygon : public Shape, public QGraphicsItem
 {
 public:
-    Polygon(int id, vector<int> x, vector<int> y, QPen* pen);
+    Polygon(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen, QBrush* brush);
 
     void draw() override;
 
@@ -14,13 +14,15 @@ public:
 
     double perimeter() override;
 
+    QRectF boundingRect() const override;
+
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
 private:
     QPen* pen;
-    QBrush brush;
-    vector<int> x;
-    vector<int> y;
+    QBrush* brush;
+    myStd::vector<int> x;
+    myStd::vector<int> y;
 
 };
 #endif // POLYGON_H

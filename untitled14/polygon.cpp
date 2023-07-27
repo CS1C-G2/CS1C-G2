@@ -1,6 +1,6 @@
 #include "polygon.h"
-Polygon::Polygon(int id, vector<int> x, vector<int> y, QPen* pen) :
-    Shape(id), x{x}, y{y}, pen{pen} { }
+Polygon::Polygon(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen, QBrush* brush) :
+    Shape(id), x{x}, y{y}, pen{pen}, brush{brush} { }
 void Polygon::draw() {
     update();
 }
@@ -30,6 +30,9 @@ double Polygon::perimeter() {
     perim += sqrt(pow(x[0] - x.back(), 2) + pow(y[0] - y.back(), 2));
     return perim;
 }
+QRectF Polygon::boundingRect() const {
+    return QRectF();
+}
 void Polygon::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -39,5 +42,6 @@ void Polygon::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
         points[i] = QPointF(x[i], y[i]);
     }
     painter->setPen(*pen);
+    painter->setBrush(*brush);
     painter->drawPolygon(points, 4);
 }

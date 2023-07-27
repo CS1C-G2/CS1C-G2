@@ -74,3 +74,7 @@ void Text::setTextFontWeight(QFont::Weight textFontWeight)
 {
     font->setWeight(textFontWeight);
 }
+QRectF Text::boundingRect() const
+{
+    return QRectF();
+}

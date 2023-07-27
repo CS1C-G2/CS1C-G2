@@ -14,7 +14,11 @@
 #include <cmath>
 #include <QFont>
 
+#include "vector.cpp"
+
 using namespace std;
+using myStd::vector;
+
 const double pi = 3.14;
 enum SHAPE_TYPES { LINE, POLYLINE, POLYGON, RECTANGLE, SQUARE, ELLIPSE, CIRCLE, TEXT };
 

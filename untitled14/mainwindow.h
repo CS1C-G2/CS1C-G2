@@ -12,6 +12,8 @@
 #include <QDockWidget>
 #include <QPushButton>
 
+#include "vector.cpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -42,8 +44,12 @@ private slots:
     void createEllipse();
     void createCircle();
     void createText();
+    void addPolylinePoint();
+    void addPolygonPoint();
 
 private:
+    void emptyInputVectors();
+
     Ui::MainWindow *ui;
     QAction *contactAction;
     QAction *helpAction;
@@ -52,6 +58,8 @@ private:
     QGraphicsScene *graphicsScene;
     QPushButton* createButton;
 
+    myStd::vector<int> inputX;
+    myStd::vector<int> inputY;
 };
 
 #endif // MAINWINDOW_H

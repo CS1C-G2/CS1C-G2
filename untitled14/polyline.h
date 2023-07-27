@@ -5,7 +5,7 @@
 class Polyline : public Shape, public QGraphicsItem
 {
 public:
-    Polyline(int id, vector<int> x, vector<int> y, QPen* pen, QBrush* brush);
+    Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen);
 
     void draw() override;
 
@@ -22,9 +22,8 @@ public:
 private:
     Qt::GlobalColor PenColor;
     QPen* pen;
-    QBrush* brush;
-    vector<int> x;
-    vector<int> y;
+    myStd::vector<int> x;
+    myStd::vector<int> y;
 
 };
 #endif // POLYLINE_H
