@@ -34,6 +34,8 @@ set(PROJECT_SOURCES
         square.h
         text.cpp
         text.h
+        testimonial.cpp
+        testimonial.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
