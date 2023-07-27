@@ -1,6 +1,6 @@
 #ifndef POLYLINE_H
 #define POLYLINE_H
-#include "shape.h"
+#include "Shape.h"
 
 class Polyline : public Shape, public QGraphicsItem
 {

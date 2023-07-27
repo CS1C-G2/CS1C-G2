@@ -1,6 +1,6 @@
 #ifndef SHAPE_H
 #define SHAPE_H
-#include "mainwindow.h"
+//#include "mainwindow.h"
 #include "qgraphicsitem.h"
 #include <QMainWindow>
 #include <QMainWindow>
@@ -38,6 +38,10 @@ public:
     virtual double area() = 0;
 
     virtual double perimeter() = 0;
+
+    int getId() const {return id;}
+
+    SHAPE_TYPES getType() const {return type;}
 
 private:
     int id;

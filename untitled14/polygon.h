@@ -1,6 +1,6 @@
 #ifndef POLYGON_H
 #define POLYGON_H
-#include "shape.h"
+#include "Shape.h"
 class Polygon : public Shape, public QGraphicsItem
 {
 public:
