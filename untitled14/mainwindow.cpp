@@ -8,6 +8,9 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QPainterPath>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QMessageBox>
 
 #include "line.h"
 #include "polyline.h"
@@ -17,6 +20,7 @@
 #include "ellipse.h"
 #include "circle.h"
 #include "text.h"
+#include "testimonial.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     createMenus();
     startRenderingArea();
     onShapeCreate();
+
+    //Uncomment code below to clear the testimonials
+    //clearTestimonials();
 
 } // MainWindow
 
@@ -389,16 +396,24 @@ void MainWindow::createMenus() {
     setMenuBar(menuBar);
     // Create the "File" menu and add it to the menu bar
     QMenu *fileMenu = menuBar->addMenu("file");
+    // Create the "Testimonial" menu and add it to menu bar
+    QMenu *testimonialMenu = menuBar->addMenu("Testimonials");
     // Create the "Contact Us" QAction and add it to the "File" menu
     contactAction = new QAction("Contact Us", this);
     helpAction = new QAction("help", this);
     aboutAction = new QAction("About us", this);
+    addTestimonial = new QAction("Add Testimonial", this);
+    viewTestimonial = new QAction("View Testimonials", this);
     fileMenu->addAction(contactAction);
     fileMenu->addAction(helpAction);
     fileMenu->addAction(aboutAction);
+    testimonialMenu->addAction(addTestimonial);
+    testimonialMenu->addAction(viewTestimonial);
     connect(contactAction, &QAction::triggered, this, &MainWindow::onContactUs);
     connect(helpAction, &QAction::triggered, this, &MainWindow::onHelp);
     connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
+    connect(addTestimonial, &QAction::triggered, this, &MainWindow::onAddTestimonial);
+    connect(viewTestimonial, &QAction::triggered, this, &MainWindow::onViewTestimonials);
 
 } // createMenus
 
@@ -436,10 +451,79 @@ void MainWindow::onAbout() {
 
 } // onAbout
 
+<<<<<<< HEAD
 void MainWindow::emptyInputVectors() {
     inputX = {};
     inputY = {};
 }
+=======
+void MainWindow::onAddTestimonial() {
+
+    QDialog *testimonialDialog = new QDialog(this);
+    testimonialDialog->setWindowTitle("Add Testimonial");
+
+    QVBoxLayout *layout = new QVBoxLayout(testimonialDialog);
+
+    QLabel *firstNameLabel = new QLabel("First name:");
+    layout->addWidget(firstNameLabel);
+    QLineEdit *firstNameEdit = new QLineEdit;
+    layout->addWidget(firstNameEdit);
+
+    QLabel *lastNameLabel = new QLabel("Last name:");
+    layout->addWidget(lastNameLabel);
+    QLineEdit *lastNameEdit = new QLineEdit;
+    layout->addWidget(lastNameEdit);
+
+    QLabel *testimonialLabel = new QLabel("Testimonial:");
+    layout->addWidget(testimonialLabel);
+    QTextEdit *testimonialEdit = new QTextEdit;
+    layout->addWidget(testimonialEdit);
+
+    QPushButton *submitButton = new QPushButton("Submit");
+    layout->addWidget(submitButton);
+
+    QObject::connect(submitButton, &QPushButton::clicked, [&] {
+        if (firstNameEdit->text().isEmpty() || lastNameEdit->text().isEmpty() || testimonialEdit->toPlainText().isEmpty()) {
+            QMessageBox::warning(testimonialDialog, "Input Error", "All fields must be filled!");
+            return;
+        }
+        Testimonial *test = new Testimonial(firstNameEdit->text().toStdString(), lastNameEdit->text().toStdString(),
+                                            testimonialEdit->toPlainText().toStdString());
+
+
+        test->writeFile();
+
+        delete test;
+
+        testimonialDialog->close();
+
+    });
+
+    testimonialDialog->setLayout(layout);
+
+    testimonialDialog->exec();
+
+} // onAddTestimonial
+
+void MainWindow::onViewTestimonials() {
+    QDialog *testimonialDialog = new QDialog(this);
+    testimonialDialog->setWindowTitle("Testimonials");
+    QVBoxLayout *newLayout = new QVBoxLayout(testimonialDialog);
+    QTextEdit *textArea = new QTextEdit(testimonialDialog);
+    textArea->setReadOnly(true);
+    Testimonial test;
+    test.printTestimonials(textArea);
+    newLayout->addWidget(textArea);
+    testimonialDialog->exec();
+
+} // onViewTestimonial
+
+void MainWindow::clearTestimonials() {
+    std::ofstream ofs;
+    ofs.open("testimonials.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
+}   // clearTestimonials
+>>>>>>> 53722ec6fb74126175a93622dc83d812cefb9ee6
 
 // deleting everything
 MainWindow::~MainWindow() {

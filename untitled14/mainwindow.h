@@ -36,6 +36,8 @@ private slots:
     void onAbout();
     void onHelp();
     void onShapeCreate();
+    void onAddTestimonial();
+    void onViewTestimonials();
     void createLine();
     void createPolyline();
     void createPolygon();
@@ -46,6 +48,7 @@ private slots:
     void createText();
     void addPolylinePoint();
     void addPolygonPoint();
+    void clearTestimonials();
 
 private:
     void emptyInputVectors();
@@ -54,6 +57,8 @@ private:
     QAction *contactAction;
     QAction *helpAction;
     QAction *aboutAction;
+    QAction *addTestimonial;
+    QAction *viewTestimonial;
     QGraphicsView *graphicsView;
     QGraphicsScene *graphicsScene;
     QPushButton* createButton;
