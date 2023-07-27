@@ -47,6 +47,23 @@ public:
         return *this;  // return a self-reference
     }
 
+    vector& operator=(vector&& src) noexcept
+    {
+    if (this != &src) // prevent self-move
+    {
+        delete[] elem; // delete old elements
+        elem = src.elem;
+        size_v = src.size_v;
+        space = src.space;
+
+        // leave src in a valid state
+        src.elem = nullptr;
+        src.size_v = 0;
+        src.space = 0;
+    }
+    return *this;
+    }
+
     ~vector() {
         delete[] elem; // destructor
     }
