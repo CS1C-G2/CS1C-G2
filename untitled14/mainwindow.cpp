@@ -578,18 +578,9 @@ void MainWindow::createText() {
 
     // Get selected pen color and style from the UI
     Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_5->currentIndex() + 2);
-    int penWidth = ui->penWidthValue_5->value();
-
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_5->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_5->currentIndex() * 16);
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_5->currentIndex() * 64);
 
     // Create the QPen and QBrush objects
     QPen* pen = new QPen(penColor);
-    pen->setWidth(penWidth);
-    pen->setStyle(penStyle);
-    pen->setCapStyle(penCapStyle);
-    pen->setJoinStyle(penJoinStyle);
 
     QFont* font = new QFont(family, pointSize, weight);
     font->setStyle(fontStyle);
