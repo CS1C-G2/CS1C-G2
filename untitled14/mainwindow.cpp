@@ -11,6 +11,11 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QMessageBox>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QSlider>
+#include <QSpinBox>
 
 #include "line.h"
 #include "polyline.h"
@@ -21,15 +26,24 @@
 #include "circle.h"
 #include "text.h"
 #include "testimonial.h"
+#include "user.h"
+#include "admin.h"
+#include "guest.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
+
+    currentUser = new Guest();
+    updateUIForCurrentUser()
+    
+    connect(ui->loginButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
+
     createMenus();
     startRenderingArea();
-    onShapeCreate();
+    onShapeCreate(currentUser);
 
     //Uncomment code below to clear the testimonials
     //clearTestimonials();
@@ -124,8 +138,80 @@ void MainWindow::startRenderingArea() {
 
 } // startRenderingArea
 
-void MainWindow::createShape() {
-    switch (ui->tabWidget->currentIndex()) {
+void MainWindow::onLoginClicked() {
+
+    // Convert QString to std::string for comparison
+    std::string username = ui->usernameEdit->text().toStdString();
+    std::string password = ui->passwordEdit->text().toStdString();
+
+    // Check if the entered username and password are correct
+    if(username == "admin" && password == "password") { // compare entered password to "password"
+        delete currentUser;
+        currentUser = new Admin("admin", "password"); // pass "password" to the Admin constructor
+        QMessageBox::information(this, "Logged in", "You are now logged in as an admin.");
+    } else if(!username.empty()) {
+        QMessageBox::warning(this, "Login failed", "Incorrect username or password.");
+    } else {
+        delete currentUser;
+        currentUser = new Guest();
+    }
+
+    // Update the UI according to the user permissions
+    updateUIForCurrentUser();
+}
+
+void MainWindow::updateUIForCurrentUser() {
+    bool isEnabled = (currentUser->getType() == "Admin");
+
+    QWidget* excludedWidget1 = ui->loginButton;
+    QWidget* excludedWidget2 = ui->usernameEdit;
+    QWidget* excludedWidget3 = ui->passwordEdit;
+
+    QList<QPushButton*> buttons = findChildren<QPushButton*>();
+    for (QPushButton* button : buttons) {
+        if (button != excludedWidget1 && button != excludedWidget2 && button != excludedWidget3) {
+            button->setEnabled(isEnabled);
+        }
+    }
+
+    QList<QLineEdit*> lineEdits = findChildren<QLineEdit*>();
+    for (QLineEdit* lineEdit : lineEdits) {
+        if (lineEdit != excludedWidget1 && lineEdit != excludedWidget2 && lineEdit != excludedWidget3) {
+            lineEdit->setEnabled(isEnabled);
+        }
+    }
+
+    QList<QCheckBox*> checkBoxes = findChildren<QCheckBox*>();
+    for (QCheckBox* checkBox : checkBoxes) {
+        checkBox->setEnabled(isEnabled);
+    }
+
+    QList<QRadioButton*> radioButtons = findChildren<QRadioButton*>();
+    for (QRadioButton* radioButton : radioButtons) {
+        radioButton->setEnabled(isEnabled);
+    }
+
+    QList<QComboBox*> comboBoxes = findChildren<QComboBox*>();
+    for (QComboBox* comboBox : comboBoxes) {
+        comboBox->setEnabled(isEnabled);
+    }
+
+    QList<QSlider*> sliders = findChildren<QSlider*>();
+    for (QSlider* slider : sliders) {
+        slider->setEnabled(isEnabled);
+    }
+
+    QList<QSpinBox*> spinBoxes = findChildren<QSpinBox*>();
+    for (QSpinBox* spinBox : spinBoxes) {
+        if (spinBox != excludedWidget1 && spinBox != excludedWidget2 && spinBox != excludedWidget3) {
+            spinBox->setEnabled(isEnabled);
+        }
+    }
+}
+
+void MainWindow::createShape(User* user) {
+    if(user->getType() == "Admin") {
+        switch (ui->tabWidget->currentIndex()) {
         case 0:
             createLine();
             break;
@@ -160,6 +246,9 @@ void MainWindow::createShape() {
 
         default:
             break;
+        }
+    } else {
+        
     }
 }
 
@@ -172,6 +261,12 @@ void MainWindow::onShapeCreate() {
     connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
     connect(ui->Delete, &QPushButton::clicked, this, &MainWindow::onDeleteShape);
     connect(ui->Move, &QPushButton::clicked, this, &MainWindow::onMoveShape);
+
+    //Change if you need to, added just in case.
+    connect(createButton, &QPushButton::clicked, this, [this, currentUser]() {
+        this->createShape(currentUser);
+    }
+        
 } // onShapeCreate
 
 void MainWindow::addPolylinePoint() {
