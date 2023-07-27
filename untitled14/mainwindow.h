@@ -44,6 +44,7 @@ private slots:
     void createEllipse();
     void createCircle();
     void createText();
+    void clearTestimonials();
 
 private:
     Ui::MainWindow *ui;
