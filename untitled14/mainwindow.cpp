@@ -8,106 +8,109 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QPainterPath>
-#include <QLineEdit>
-#include <QTextEdit>
 #include <QMessageBox>
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QSlider>
+#include <QSpinBox>
+
 
 #include "line.h"
-#include "polyline.h"
-#include "polygon.h"
 #include "rectangle.h"
 #include "square.h"
 #include "ellipse.h"
 #include "circle.h"
-#include "text.h"
-#include "testimonial.h"
+#include "user.h"
+#include "admin.h"
+#include "guest.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow) {
+    , ui(new Ui::MainWindow) {;
 
     ui->setupUi(this);
+
+    currentUser = new Guest();
+    updateUIForCurrentUser(); // Call this function to update the UI for the current user.
+
+    connect(ui->loginButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
+
     createMenus();
     startRenderingArea();
-    onShapeCreate();
-
-    //Uncomment code below to clear the testimonials
-    //clearTestimonials();
+    onShapeCreate(currentUser);
 
 } // MainWindow
 
-void MainWindow::addShape(Shape* shape) {
-    shapes.push_back(shape);
+void MainWindow::onLoginClicked() {
 
-    QString label = QString::number(id++);
-    switch (shape->getType()) {
-    case 0:
-        label += ". Line";
-        break;
+    // Convert QString to std::string for comparison
+    std::string username = ui->usernameEdit->text().toStdString();
+    std::string password = ui->passwordEdit->text().toStdString();
 
-    case 1:
-        label += ". Polyline";
-        break;
-
-    case 2:
-        label += ". Polygon";
-        break;
-
-    case 3:
-        label += ". Rectangle";
-        break;
-
-    case 4:
-        label += ". Square";
-        break;
-
-    case 5:
-        label += ". Ellipse";
-        break;
-
-    case 6:
-        label += ". Circle";
-        break;
-
-    case 7:
-        label += ". Text";
-        break;
-
-    default:
-        break;
+    // Check if the entered username and password are correct
+    if(username == "admin" && password == "password") { // compare entered password to "password"
+        delete currentUser;
+        currentUser = new Admin("admin", "password"); // pass "password" to the Admin constructor
+        QMessageBox::information(this, "Logged in", "You are now logged in as an admin.");
+    } else if(!username.empty()) {
+        QMessageBox::warning(this, "Login failed", "Incorrect username or password.");
+    } else {
+        delete currentUser;
+        currentUser = new Guest();
     }
 
-    ui->id->addItem(label);
+    // Update the UI according to the user permissions
+    updateUIForCurrentUser();
 }
 
-void MainWindow::removeShape(int id, int comboBoxIndex) {
-    int index = -1;
-    for (int i = 0; i < shapes.size(); ++i) {
-        if (id == shapes[i]->getId()) {
-            index = i;
-            break;
+
+void MainWindow::updateUIForCurrentUser() {
+    bool isEnabled = (currentUser->getType() == "Admin");
+
+    QWidget* excludedWidget1 = ui->loginButton;
+    QWidget* excludedWidget2 = ui->usernameEdit;
+    QWidget* excludedWidget3 = ui->passwordEdit;
+
+    QList<QPushButton*> buttons = findChildren<QPushButton*>();
+    for (QPushButton* button : buttons) {
+        if (button != excludedWidget1 && button != excludedWidget2 && button != excludedWidget3) {
+            button->setEnabled(isEnabled);
         }
     }
 
-    if (index != -1) {
-        delete shapes[index]; // remove if .erase deallocates for us
-        shapes.erase(shapes.begin() + index);
-    }
-
-    ui->id->removeItem(comboBoxIndex);
-}
-
-void MainWindow::moveShape(int id, int x, int y) {
-    int index = -1;
-    for (int i = 0; i < shapes.size(); ++i) {
-        if (id == shapes[i]->getId()) {
-            index = i;
-            break;
+    QList<QLineEdit*> lineEdits = findChildren<QLineEdit*>();
+    for (QLineEdit* lineEdit : lineEdits) {
+        if (lineEdit != excludedWidget1 && lineEdit != excludedWidget2 && lineEdit != excludedWidget3) {
+            lineEdit->setEnabled(isEnabled);
         }
     }
 
-    if (index != -1) {
-        shapes[index]->move(x, y);
+    QList<QCheckBox*> checkBoxes = findChildren<QCheckBox*>();
+    for (QCheckBox* checkBox : checkBoxes) {
+        checkBox->setEnabled(isEnabled);
+    }
+
+    QList<QRadioButton*> radioButtons = findChildren<QRadioButton*>();
+    for (QRadioButton* radioButton : radioButtons) {
+        radioButton->setEnabled(isEnabled);
+    }
+
+    QList<QComboBox*> comboBoxes = findChildren<QComboBox*>();
+    for (QComboBox* comboBox : comboBoxes) {
+        comboBox->setEnabled(isEnabled);
+    }
+
+    QList<QSlider*> sliders = findChildren<QSlider*>();
+    for (QSlider* slider : sliders) {
+        slider->setEnabled(isEnabled);
+    }
+
+    QList<QSpinBox*> spinBoxes = findChildren<QSpinBox*>();
+    for (QSpinBox* spinBox : spinBoxes) {
+        if (spinBox != excludedWidget1 && spinBox != excludedWidget2 && spinBox != excludedWidget3) {
+            spinBox->setEnabled(isEnabled);
+        }
     }
 }
 
@@ -118,14 +121,13 @@ void MainWindow::startRenderingArea() {
     graphicsScene = new QGraphicsScene(this);
     // Set the scene on the view
     graphicsView->setScene(graphicsScene);
-    graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-    graphicsView->setTransformationAnchor(QGraphicsView::NoAnchor);
-    graphicsView->setRenderHint(QPainter::SmoothPixmapTransform);
+
 
 } // startRenderingArea
 
-void MainWindow::createShape() {
-    switch (ui->tabWidget->currentIndex()) {
+void MainWindow::createShape(User* user) {
+    if(user->getType() == "Admin") {
+        switch (ui->tabWidget->currentIndex()) {
         case 0:
             createLine();
             break;
@@ -160,64 +162,22 @@ void MainWindow::createShape() {
 
         default:
             break;
+        }
+    } else {
+        // Show an error message or do nothing
     }
 }
 
-void MainWindow::onShapeCreate() {
+void MainWindow::onShapeCreate(User* currentUser) {
 
     // Create "Create" button for Square tab
     QPushButton* createButton = ui->CreateShape;
-    connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
-    connect(ui->AddPoint, &QPushButton::clicked, this, &MainWindow::addPolylinePoint);
-    connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
-    connect(ui->Delete, &QPushButton::clicked, this, &MainWindow::onDeleteShape);
-    connect(ui->Move, &QPushButton::clicked, this, &MainWindow::onMoveShape);
-} // onShapeCreate
 
-void MainWindow::addPolylinePoint() {
-    inputX.push_back(ui->x_6->value());
-    inputY.push_back(ui->y_6->value());
+    // Connect the button to the createShape() slot
+    connect(createButton, &QPushButton::clicked, this, [this, currentUser]() {
+        this->createShape(currentUser);
+    });
 }
-
-void MainWindow::addPolygonPoint() {
-    inputX.push_back(ui->x_7->value());
-    inputY.push_back(ui->y_7->value());
-}
-
-void MainWindow::onDeleteShape() {
-    int id = 0;
-    QString stringId;
-    QString text = ui->id->currentText();
-    for (int i = 0; i < text.length(); ++i) {
-        if (text[i] != '.') {
-            stringId += text[i];
-        } else {
-            break;
-        }
-    }
-
-    id = stringId.toInt();
-
-    removeShape(id, ui->id->currentIndex());
-}
-
-void MainWindow::onMoveShape() {
-    int id = 0;
-    QString stringId;
-    QString text = ui->id->currentText();
-    for (int i = 0; i < text.length(); ++i) {
-        if (text[i] != '.') {
-            stringId += text[i];
-        } else {
-            break;
-        }
-    }
-
-    id = stringId.toInt();
-
-    moveShape(id, ui->x_8->value(), ui->y_8->value());
-}
-
 void MainWindow::createLine() {
     // getting stuff from the UI
     int x = ui->x_2->value();
@@ -242,78 +202,21 @@ void MainWindow::createLine() {
 
     graphicsScene->clear();
     // Create the Line object
-    Line* line = new Line(id, x, y, x1, y1, pen);
+    Line* line = new Line(3, x, y, x1, y1, pen);
 
     // Add the line to the QGraphicsScene
     graphicsScene->addItem(line);
 
     // Call the draw function to render the line
     line->draw();
-    addShape(line);
 }
 
 void MainWindow::createPolyline() {
-    // Get selected pen color and style from the UI
-    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_6->currentIndex() + 2);
-    int penWidth = ui->penWidthValue_6->value();
 
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_6->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_6->currentIndex() * 16);
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_6->currentIndex() * 64);
-
-    // Create the QPen objects
-    QPen* pen = new QPen(penColor);
-    pen->setWidth(penWidth);
-    pen->setStyle(penStyle);
-    pen->setCapStyle(penCapStyle);
-    pen->setJoinStyle(penJoinStyle);
-
-    graphicsScene->clear();
-    // Create the Polyline object
-    Polyline* polyline = new Polyline(id, inputX, inputY, pen);
-
-    // Add the polyline to the QGraphicsScene
-    graphicsScene->addItem(polyline);
-
-    // Call the draw function to render the polyline
-    polyline->draw();
-    emptyInputVectors();
-    addShape(polyline);
 }
 
 void MainWindow::createPolygon() {
-    // Get selected pen color and style from the UI
-    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_7->currentIndex() + 2);
-    int penWidth = ui->penWidthValue_7->value();
 
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_7->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_7->currentIndex() * 16);
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_7->currentIndex() * 64);
-
-    // Get selected brush color and style from the UI
-    Qt::GlobalColor brushColor = static_cast<Qt::GlobalColor>(ui->brushColorValue_7->currentIndex() + 2);
-    Qt::BrushStyle brushStyle = static_cast<Qt::BrushStyle>(ui->brushStyleValue_7->currentIndex());
-
-    // Create the QPen objects
-    QPen* pen = new QPen(penColor);
-    pen->setWidth(penWidth);
-    pen->setStyle(penStyle);
-    pen->setCapStyle(penCapStyle);
-    pen->setJoinStyle(penJoinStyle);
-
-    QBrush* brush = new QBrush(brushColor, brushStyle);
-
-    graphicsScene->clear();
-    // Create the Polygon object
-    Polygon* polygon = new Polygon(id, inputX, inputY, pen, brush);
-
-    // Add the polyline to the QGraphicsScene
-    graphicsScene->addItem(polygon);
-
-    // Call the draw function to render the polygon
-    polygon->draw();
-    emptyInputVectors();
-    addShape(polygon);
 }
 
 void MainWindow::createRectangle() {
@@ -344,14 +247,13 @@ void MainWindow::createRectangle() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Rectangle object
-    Rectangle* rect = new Rectangle(id, x, y, length, width, pen, brush);
+    Rectangle* rect = new Rectangle(2, x, y, length, width, pen, brush);
 
     // Add the rectangle to the QGraphicsScene
     graphicsScene->addItem(rect);
 
     // Call the draw function to render the rectangle
     rect->draw();
-    addShape(rect);
 }
 
 void MainWindow::createSquare() {
@@ -381,14 +283,13 @@ void MainWindow::createSquare() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Square object
-    Square* square = new Square(id, x, y, length, pen, brush);
+    Square* square = new Square(1, x, y, length, pen, brush);
 
     // Add the square to the QGraphicsScene
     graphicsScene->addItem(square);
 
     // Call the draw function to render the square
     square->draw();
-    addShape(square);
 
 } // createSquare
 
@@ -420,14 +321,13 @@ void MainWindow::createEllipse() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Ellipse object
-    Ellipse* ellipse = new Ellipse(id, x, y, radius1, radius2, pen, brush);
+    Ellipse* ellipse = new Ellipse(4, x, y, radius1, radius2, pen, brush);
 
     // Add the ellipse to the QGraphicsScene
     graphicsScene->addItem(ellipse);
 
     // Call the draw function to render the ellipse
     ellipse->draw();
-    addShape(ellipse);
 }
 
 void MainWindow::createCircle() {
@@ -457,58 +357,17 @@ void MainWindow::createCircle() {
     QBrush* brush = new QBrush(brushColor, brushStyle);
     graphicsScene->clear();
     // Create the Circle object
-    Circle* circle = new Circle(id, x, y, radius, pen, brush);
+    Circle* circle = new Circle(5, x, y, radius, pen, brush);
 
     // Add the circle to the QGraphicsScene
     graphicsScene->addItem(circle);
 
     // Call the draw function to render the circle
     circle->draw();
-    addShape(circle);
 }
 
 void MainWindow::createText() {
-    // getting stuff from the UI
-    int x = ui->x_5->value();
-    int y = ui->y_5->value();
-    int length = ui->length_5->value();
-    int width = ui->width_5->value();
-    QString drawText = ui->textValue_5->toPlainText();
-    Qt::AlignmentFlag textAlignment = static_cast<Qt::AlignmentFlag>(ui->textAlignmentValue_5->currentIndex());  // gotta convert
-    QString family = ui->textFontFamilyValue_5->toPlainText();
-    int pointSize = ui->textPointSizeValue_5->value();
-    QFont::Style fontStyle = static_cast<QFont::Style>(ui->textFontStyleValue_5->currentIndex());
-    QFont::Weight weight = static_cast<QFont::Weight>(ui->textFontWeightValue_5->currentIndex());
 
-
-    // Get selected pen color and style from the UI
-    Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_5->currentIndex() + 2);
-    int penWidth = ui->penWidthValue_5->value();
-
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_5->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_5->currentIndex() * 16);
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_5->currentIndex() * 64);
-
-    // Create the QPen and QBrush objects
-    QPen* pen = new QPen(penColor);
-    pen->setWidth(penWidth);
-    pen->setStyle(penStyle);
-    pen->setCapStyle(penCapStyle);
-    pen->setJoinStyle(penJoinStyle);
-
-    QFont* font = new QFont(family, pointSize, weight);
-    font->setStyle(fontStyle);
-
-    graphicsScene->clear();
-    // Create the Text object
-    Text* text = new Text(id, x, y, width, length, drawText, font, pen, textAlignment);
-
-    // Add the text to the QGraphicsScene
-    graphicsScene->addItem(text);
-
-    // Call the draw function to render the circle
-    text->draw();
-    addShape(text);
 }
 
 void MainWindow::createMenus() {
@@ -517,24 +376,16 @@ void MainWindow::createMenus() {
     setMenuBar(menuBar);
     // Create the "File" menu and add it to the menu bar
     QMenu *fileMenu = menuBar->addMenu("file");
-    // Create the "Testimonial" menu and add it to menu bar
-    QMenu *testimonialMenu = menuBar->addMenu("Testimonials");
     // Create the "Contact Us" QAction and add it to the "File" menu
     contactAction = new QAction("Contact Us", this);
     helpAction = new QAction("help", this);
     aboutAction = new QAction("About us", this);
-    addTestimonial = new QAction("Add Testimonial", this);
-    viewTestimonial = new QAction("View Testimonials", this);
     fileMenu->addAction(contactAction);
     fileMenu->addAction(helpAction);
     fileMenu->addAction(aboutAction);
-    testimonialMenu->addAction(addTestimonial);
-    testimonialMenu->addAction(viewTestimonial);
     connect(contactAction, &QAction::triggered, this, &MainWindow::onContactUs);
     connect(helpAction, &QAction::triggered, this, &MainWindow::onHelp);
     connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
-    connect(addTestimonial, &QAction::triggered, this, &MainWindow::onAddTestimonial);
-    connect(viewTestimonial, &QAction::triggered, this, &MainWindow::onViewTestimonials);
 
 } // createMenus
 
@@ -572,81 +423,10 @@ void MainWindow::onAbout() {
 
 } // onAbout
 
-void MainWindow::emptyInputVectors() {
-    inputX = {};
-    inputY = {};
-}
-
-void MainWindow::onAddTestimonial() {
-
-    QDialog *testimonialDialog = new QDialog(this);
-    testimonialDialog->setWindowTitle("Add Testimonial");
-
-    QVBoxLayout *layout = new QVBoxLayout(testimonialDialog);
-
-    QLabel *firstNameLabel = new QLabel("First name:");
-    layout->addWidget(firstNameLabel);
-    QLineEdit *firstNameEdit = new QLineEdit;
-    layout->addWidget(firstNameEdit);
-
-    QLabel *lastNameLabel = new QLabel("Last name:");
-    layout->addWidget(lastNameLabel);
-    QLineEdit *lastNameEdit = new QLineEdit;
-    layout->addWidget(lastNameEdit);
-
-    QLabel *testimonialLabel = new QLabel("Testimonial:");
-    layout->addWidget(testimonialLabel);
-    QTextEdit *testimonialEdit = new QTextEdit;
-    layout->addWidget(testimonialEdit);
-
-    QPushButton *submitButton = new QPushButton("Submit");
-    layout->addWidget(submitButton);
-
-    QObject::connect(submitButton, &QPushButton::clicked, [&] {
-        if (firstNameEdit->text().isEmpty() || lastNameEdit->text().isEmpty() || testimonialEdit->toPlainText().isEmpty()) {
-            QMessageBox::warning(testimonialDialog, "Input Error", "All fields must be filled!");
-            return;
-        }
-        Testimonial *test = new Testimonial(firstNameEdit->text().toStdString(), lastNameEdit->text().toStdString(),
-                                            testimonialEdit->toPlainText().toStdString());
-
-
-        test->writeFile();
-
-        delete test;
-
-        testimonialDialog->close();
-
-    });
-
-    testimonialDialog->setLayout(layout);
-
-    testimonialDialog->exec();
-
-} // onAddTestimonial
-
-void MainWindow::onViewTestimonials() {
-    QDialog *testimonialDialog = new QDialog(this);
-    testimonialDialog->setWindowTitle("Testimonials");
-    QVBoxLayout *newLayout = new QVBoxLayout(testimonialDialog);
-    QTextEdit *textArea = new QTextEdit(testimonialDialog);
-    textArea->setReadOnly(true);
-    Testimonial test;
-    test.printTestimonials(textArea);
-    newLayout->addWidget(textArea);
-    testimonialDialog->exec();
-
-} // onViewTestimonial
-
-void MainWindow::clearTestimonials() {
-    std::ofstream ofs;
-    ofs.open("testimonials.txt", std::ofstream::out | std::ofstream::trunc);
-    ofs.close();
-}   // clearTestimonials
-
 // deleting everything
 MainWindow::~MainWindow() {
     delete ui;
+    delete currentUser;
     delete contactAction;
     delete helpAction;
     delete aboutAction;
