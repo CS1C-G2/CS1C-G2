@@ -7,7 +7,10 @@ class Polyline : public Shape, public QGraphicsItem
 public:
     Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen);
 
+    Polyline(int id) : Shape(id) {}
+    virtual ~Polyline() {}
     void draw() override;
+    virtual bool serializeShape(istream& is) override;
 
     void move(int x, int y) override;
 
@@ -20,6 +23,8 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
+    virtual void internalSerializeShape(ostream& os) override;
+
     Qt::GlobalColor PenColor;
     QPen* pen;
     myStd::vector<int> x;

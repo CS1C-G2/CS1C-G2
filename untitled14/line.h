@@ -5,9 +5,10 @@
 class Line : public Shape, public QGraphicsItem
 {
 public:
+    Line(int id) : Shape(id) {}
     Line(int id, int x1, int y1, int x2, int y2, QPen* pen);
-
     ~Line();
+    virtual bool serializeShape(istream& is) override;
 
     void draw() override;
 
@@ -23,6 +24,7 @@ public:
 
 
 private:
+    virtual void internalSerializeShape(ostream& os) override;
     QPen* pen;
     int x1;
     int y1;

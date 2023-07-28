@@ -44,6 +44,9 @@ set(PROJECT_SOURCES
         user.h
         user.cpp
 	vector.h
+	shape.cpp
+	shapefactory.h
+	shapefactory.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

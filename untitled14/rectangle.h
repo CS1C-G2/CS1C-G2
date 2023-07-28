@@ -6,7 +6,10 @@ class Rectangle : public Shape, public QGraphicsItem
 public:
     Rectangle(int id, int x, int y, int length, int width, QPen* pen, QBrush* brush);
 
+    Rectangle(int id) : Shape(id) {}
+    virtual ~Rectangle() {}
     void draw() override;
+    virtual bool serializeShape(istream& is) override;
 
     void move(int x, int y) override;
 
@@ -19,6 +22,8 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
+    virtual void internalSerializeShape(ostream& os) override;
+
     Qt::GlobalColor PenColor;
     QPen* pen;
     QBrush* brush;

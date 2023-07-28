@@ -5,7 +5,9 @@ class Square : public Shape, public QGraphicsItem
 {
 public:
     Square(int id, int x, int y, int length, QPen* pen, QBrush* brush);
-
+    Square(int id) : Shape(id) {}
+    virtual bool serializeShape(istream& is) override;
+    virtual ~Square() {}
     void draw() override;
 
     void move(int x, int y) override;
