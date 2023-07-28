@@ -12,6 +12,12 @@
 #include <QTextEdit>
 #include <QMessageBox>
 #include <math.h> // pow
+#include <QCheckBox>
+#include <QRadioButton>
+#include <QComboBox>
+#include <QSlider>
+#include <QSpinBox>
+#include <QFileDialog>
 
 #include "line.h"
 #include "polyline.h"
@@ -22,13 +28,24 @@
 #include "circle.h"
 #include "text.h"
 #include "testimonial.h"
+#include "user.h"
+#include "admin.h"
+#include "guest.h"
+
+User *currentUser;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
+
+    currentUser = new Guest();
+    updateUIForCurrentUser();
+    
     createMenus();
+    loginButton = ui->loginButton;
+    connect(loginButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
     startRenderingArea();
     onShapeCreate();
 
@@ -125,8 +142,79 @@ void MainWindow::startRenderingArea() {
 
 } // startRenderingArea
 
+void MainWindow::onLoginClicked() {
+
+    // Convert QString to std::string for comparison
+    std::string username = ui->usernameEdit->text().toStdString();
+    std::string password = ui->passwordEdit->text().toStdString();
+
+    // Check if the entered username and password are correct
+    if(username == "admin" && password == "password") { // compare entered password to "password"
+        delete currentUser;
+        currentUser = new Admin("admin", "password"); // pass "password" to the Admin constructor
+        QMessageBox::information(this, "Logged in", "You are now logged in as an admin.");
+    } else if(!username.empty()) {
+        QMessageBox::warning(this, "Login failed", "Incorrect username or password.");
+    } else {
+        delete currentUser;
+        currentUser = new Guest();
+    }
+
+    // Update the UI according to the user permissions
+    updateUIForCurrentUser();
+}
+
+void MainWindow::updateUIForCurrentUser() {
+    bool isEnabled = (currentUser->getType() == "Admin");
+
+    QWidget* excludedWidget1 = ui->loginButton;
+    QWidget* excludedWidget2 = ui->usernameEdit;
+    QWidget* excludedWidget3 = ui->passwordEdit;
+
+    QList<QPushButton*> buttons = findChildren<QPushButton*>();
+    for (QPushButton* button : buttons) {
+        if (button != excludedWidget1 && button != excludedWidget2 && button != excludedWidget3) {
+            button->setEnabled(isEnabled);
+        }
+    }
+
+    QList<QLineEdit*> lineEdits = findChildren<QLineEdit*>();
+    for (QLineEdit* lineEdit : lineEdits) {
+        if (lineEdit != excludedWidget1 && lineEdit != excludedWidget2 && lineEdit != excludedWidget3) {
+            lineEdit->setEnabled(isEnabled);
+        }
+    }
+
+    QList<QCheckBox*> checkBoxes = findChildren<QCheckBox*>();
+    for (QCheckBox* checkBox : checkBoxes) {
+        checkBox->setEnabled(isEnabled);
+    }
+
+    QList<QRadioButton*> radioButtons = findChildren<QRadioButton*>();
+    for (QRadioButton* radioButton : radioButtons) {
+        radioButton->setEnabled(isEnabled);
+    }
+
+    QList<QComboBox*> comboBoxes = findChildren<QComboBox*>();
+    for (QComboBox* comboBox : comboBoxes) {
+        comboBox->setEnabled(isEnabled);
+    }
+
+    QList<QSlider*> sliders = findChildren<QSlider*>();
+    for (QSlider* slider : sliders) {
+        slider->setEnabled(isEnabled);
+    }
+
+    QList<QSpinBox*> spinBoxes = findChildren<QSpinBox*>();
+    for (QSpinBox* spinBox : spinBoxes) {
+        if (spinBox != excludedWidget1 && spinBox != excludedWidget2 && spinBox != excludedWidget3) {
+            spinBox->setEnabled(isEnabled);
+        }
+    }
+}
+
 void MainWindow::createShape() {
-    switch (ui->tabWidget->currentIndex()) {
+        switch (ui->tabWidget->currentIndex()) {
         case 0:
             createLine();
             break;
@@ -161,14 +249,14 @@ void MainWindow::createShape() {
 
         default:
             break;
-    }
+        }
 }
 
 void MainWindow::onShapeCreate() {
 
     // Create "Create" button for Square tab
-    QPushButton* createButton = ui->CreateShape;
-    connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
+   // QPushButton* createButton = ui->CreateShape;
+    connect(ui->CreateShape, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
     connect(ui->AddPoint, &QPushButton::clicked, this, &MainWindow::addPolylinePoint);
     connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
     connect(ui->Delete, &QPushButton::clicked, this, &MainWindow::onDeleteShape);
@@ -491,18 +579,9 @@ void MainWindow::createText() {
 
     // Get selected pen color and style from the UI
     Qt::GlobalColor penColor = static_cast<Qt::GlobalColor>(ui->penColorValue_5->currentIndex() + 2);
-    int penWidth = ui->penWidthValue_5->value();
-
-    Qt::PenStyle penStyle = static_cast<Qt::PenStyle>(ui->penStyleValue_5->currentIndex());
-    Qt::PenCapStyle penCapStyle = static_cast<Qt::PenCapStyle>(ui->penCapStyleValue_5->currentIndex() * 16);
-    Qt::PenJoinStyle penJoinStyle = static_cast<Qt::PenJoinStyle>(ui->penJoinStyleValue_5->currentIndex() * 64);
 
     // Create the QPen and QBrush objects
     QPen* pen = new QPen(penColor);
-    pen->setWidth(penWidth);
-    pen->setStyle(penStyle);
-    pen->setCapStyle(penCapStyle);
-    pen->setJoinStyle(penJoinStyle);
 
     QFont* font = new QFont(family, pointSize, weight);
     font->setStyle(fontStyle);
@@ -533,6 +612,10 @@ void MainWindow::createMenus() {
     aboutAction = new QAction("About us", this);
     addTestimonial = new QAction("Add Testimonial", this);
     viewTestimonial = new QAction("View Testimonials", this);
+    saveAction = new QAction("Save", this);
+    loadAction = new QAction("Load", this);
+    fileMenu->addAction(saveAction);
+    fileMenu->addAction(loadAction);
     fileMenu->addAction(contactAction);
     fileMenu->addAction(helpAction);
     fileMenu->addAction(aboutAction);
@@ -543,6 +626,18 @@ void MainWindow::createMenus() {
     connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
     connect(addTestimonial, &QAction::triggered, this, &MainWindow::onAddTestimonial);
     connect(viewTestimonial, &QAction::triggered, this, &MainWindow::onViewTestimonials);
+    connect(saveAction, &QAction::triggered, this, [this]() {
+        QString fileName = QFileDialog::getSaveFileName(this, "Save Shapes", "", "Shape Files (*.txt)");
+        if (!fileName.isEmpty()) {
+           // saveShapesToFile(fileName);
+        }
+    });
+    connect(loadAction, &QAction::triggered, this, [this]() {
+        QString fileName = QFileDialog::getOpenFileName(this, "Load Shapes", "", "Shape Files (*.txt)");
+        if (!fileName.isEmpty()) {
+            //loadShapesFromFile(fileName);
+        }
+    });
 
 } // createMenus
 
@@ -655,6 +750,7 @@ void MainWindow::clearTestimonials() {
 // deleting everything
 MainWindow::~MainWindow() {
     delete ui;
+    delete currentUser;
     delete contactAction;
     delete helpAction;
     delete aboutAction;

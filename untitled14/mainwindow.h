@@ -15,6 +15,8 @@
 #include "vector.cpp"
 #include "Shape.h"
 
+class User;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -29,6 +31,7 @@ public:
     void addShape(Shape* shape);
     void removeShape(int id, int comboBoxIndex);
     void moveShape(int id, int x, int y);
+    void updateUIForCurrentUser();
 
 public slots:
     void startRenderingArea();
@@ -55,6 +58,7 @@ private slots:
     void clearTestimonials();
     void onDeleteShape();
     void onMoveShape();
+    void onLoginClicked();
 
 private:
     void emptyInputVectors();
@@ -68,7 +72,10 @@ private:
     QGraphicsView *graphicsView;
     QGraphicsScene *graphicsScene;
     QPushButton* createButton;
-
+    QPushButton* loginButton;
+    QAction* saveAction;
+    QAction* loadAction;
+    User *currentUser;
     myStd::vector<int> inputX;
     myStd::vector<int> inputY;
     myStd::vector<Shape*> shapes;
