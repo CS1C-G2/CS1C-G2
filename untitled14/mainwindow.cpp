@@ -31,6 +31,7 @@
 #include "user.h"
 #include "admin.h"
 #include "guest.h"
+#include "textedit.h"
 
 User *currentUser;
 
@@ -699,7 +700,7 @@ void MainWindow::onAddTestimonial() {
 
     QLabel *testimonialLabel = new QLabel("Testimonial:");
     layout->addWidget(testimonialLabel);
-    QTextEdit *testimonialEdit = new QTextEdit;
+    TextEdit *testimonialEdit = new TextEdit;
     layout->addWidget(testimonialEdit);
 
     QPushButton *submitButton = new QPushButton("Submit");
