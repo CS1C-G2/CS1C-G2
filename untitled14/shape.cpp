@@ -228,6 +228,25 @@ map<QFont::Weight, string> Shape::fontWeightSerializeMap
     { QFont::Black, "Black" },
 };
 
+
+const std::string WHITESPACE = " \n\r\t\f\v";
+
+std::string ltrim(const std::string &s)
+{
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? "" : s.substr(start);
+}
+
+std::string rtrim(const std::string &s)
+{
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+}
+
+std::string trim(const std::string &s) {
+    return rtrim(ltrim(s));
+}
+
 /*=================================================================================*/
 
 //standalone function
@@ -241,20 +260,21 @@ bool parseIntVectorField(istream& is, const string& expectedFieldName, IntVecFie
     ivf.first = line.substr(0, pos);	//gives just feildName
     stringstream fieldstr(line.substr(pos + 1, line.size()));	//make a stream, but have the thing youre streaming from be this string
 
-
-    while (!fieldstr.eof())	//bulletproof to make sure it only reads ints TODO
-    {
-        int x;
-        fieldstr >> x;
-        fieldstr.ignore(',');
-        ivf.second.push_back(x);
-    }
-
     if (expectedFieldName.compare(ivf.first) != 0)
     {
         return false;
     }
 
+    while (!fieldstr.eof() && !fieldstr.bad())	//bulletproof to make sure it only reads ints TODO
+    {
+        int x;
+        fieldstr >> x;
+        if (fieldstr.peek() == ',')
+        {
+            fieldstr.ignore();
+        }
+        ivf.second.push_back(x);
+    }
 
     return true;	//returns a struct of the name and the numbers following
 }
@@ -267,7 +287,7 @@ bool parseStringField(istream& is, const string& expectedFieldName, StringField&
     getline(is, line);  //gets whole line
     auto pos = line.find(':');    //if pos = npos, no find : bulletproof needed TODO
     sf.first = line.substr(0, pos);
-    sf.second = line.substr(pos + 1, line.size());
+    sf.second = trim(line.substr(pos + 1, line.size()));
 
     if (expectedFieldName.compare(sf.first) != 0)
     {
@@ -277,12 +297,16 @@ bool parseStringField(istream& is, const string& expectedFieldName, StringField&
     return true;
 }
 
-void serializeIntVectorField(ostream& os, const string& fieldName, const vector<int>& v)
+void serializeIntVectorField(ostream& os, const string& fieldName, const std::vector<int>& v)
 {
     os << fieldName << ": ";
-    for (int i : v)
+    for (int i = 0; i < v.size(); i++)
     {
-        os << i << " ";
+        os << v[i];
+        if (i != v.size() - 1)
+        {
+            os << ", ";
+        }
     }
     os << endl;
 }
@@ -294,7 +318,7 @@ void serializeStringField(ostream& os, const string& fieldName, const string& fi
 
 void Shape::serializeShape(ostream& os)
 {
-    vector<int> id = { this->id };
+    std::vector<int> id = { this->id };
     serializeIntVectorField(os, "ShapeId", id);
     internalSerializeShape(os);
     os << endl;
@@ -306,7 +330,7 @@ QPen* Shape::serializePen(istream& is) // allocates a QPen and initializes from 
     IntVecField ivf;
     StringField sf;
 
-    Qt::GlobalColor penColor = Qt::black;
+    penColor = Qt::black;
     Qt::PenStyle penStyle = Qt::SolidLine;
     Qt::PenCapStyle penCapStyle = Qt::SquareCap;
     Qt::PenJoinStyle penJoinStyle = Qt::BevelJoin;
@@ -352,7 +376,7 @@ QBrush* Shape::serializeBrush(istream& is) // allocates a QBrush and initializes
     string style;
     StringField sf;
 
-    Qt::GlobalColor brushColor = Qt::black;
+    brushColor = Qt::black;
     Qt::BrushStyle brushStyle = Qt::SolidPattern;
 
     if (!parseEnumField<Qt::GlobalColor>(is, "BrushColor", colorMap, brushColor))
@@ -380,7 +404,7 @@ QFont* Shape::serializeFont(istream& is)
     QFont::Weight weight;
     QFont::Style style;
 
-    if (parseIntVectorField(is, "textPointSize", ivf))
+    if (parseIntVectorField(is, "TextPointSize", ivf))
     {
         if (ivf.second.size() == 1)
         {
@@ -424,8 +448,8 @@ QFont* Shape::serializeFont(istream& is)
 
 void Shape::serializePen(ostream& os)
 {
-    serializeEnumField<Qt::GlobalColor>(os, "PenColor", colorSerializeMap, (Qt::GlobalColor)pen->color().value());
-    vector<int> w{pen->width()};
+    serializeEnumField<Qt::GlobalColor>(os, "PenColor", colorSerializeMap, penColor);
+    std::vector<int> w{pen->width()};
     serializeIntVectorField(os, "PenWidth", w);
     serializeEnumField<Qt::PenStyle>(os, "PenStyle", penStyleSerializeMap, pen->style());
     serializeEnumField<Qt::PenCapStyle>(os, "PenCapStyle", penCapStyleSerializeMap, pen->capStyle());
@@ -434,17 +458,16 @@ void Shape::serializePen(ostream& os)
 
 void Shape::serializeBrush(ostream& os)
 {
-    serializeEnumField<Qt::GlobalColor>(os, "BrushColor", colorSerializeMap, (Qt::GlobalColor)brush->color().value());
+    serializeEnumField<Qt::GlobalColor>(os, "BrushColor", colorSerializeMap, brushColor);
     serializeEnumField<Qt::BrushStyle>(os, "BrushStyle", brushStyleSerializeMap, brush->style());
 }
 
 void Shape::serializeFont(ostream& os)
 {
-    vector<int> v{font->pointSize()};
-    serializeIntVectorField(os, "textPointSize", v);
+    std::vector<int> v{font->pointSize()};
+    serializeIntVectorField(os, "TextPointSize", v);
     serializeStringField(os, "TextFontFamily", font->family().toStdString());
     serializeEnumField<QFont::Style>(os, "TextFontStyle", fontStyleSerializeMap, font->style());
     serializeEnumField<QFont::Weight>(os, "TextFontWeight", fontWeightSerializeMap, font->weight());
-
 }
 

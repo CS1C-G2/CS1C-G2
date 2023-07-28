@@ -32,6 +32,8 @@ public:
     void removeShape(int id, int comboBoxIndex);
     void moveShape(int id, int x, int y);
     void updateUIForCurrentUser();
+    void loadShapesFromFile(const QString& filename);
+    void saveShapesToFile(const QString& filename);
 
 public slots:
     void startRenderingArea();

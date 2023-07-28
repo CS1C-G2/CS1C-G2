@@ -1,7 +1,7 @@
 #ifndef CIRCLE_H
 #define CIRCLE_H
 #include "Shape.h"
-class Circle : public Shape, public QGraphicsItem
+class Circle : public Shape
 {
 public:
     Circle(int id, int x, int y, int radius, QPen* pen, QBrush* brush);
@@ -17,9 +17,6 @@ public:
 
 private:
     virtual void internalSerializeShape(ostream& os) override;
-    Qt::GlobalColor PenColor;
-    QPen* pen;
-    QBrush* brush;
     int x;
     int y;
     int radius;

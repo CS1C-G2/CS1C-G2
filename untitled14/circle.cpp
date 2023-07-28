@@ -1,6 +1,6 @@
 #include "circle.h"
 Circle::Circle(int id, int x, int y, int radius, QPen* pen, QBrush* brush) :
-    Shape(id, CIRCLE), x{x}, y{y}, radius{radius}, pen{pen}, brush{brush} { }
+    Shape(id), x{x}, y{y}, radius{radius} { }
 void Circle::draw() {
     update();
 }
@@ -24,4 +24,42 @@ void Circle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
     painter->setPen(*pen);
     painter->setBrush(*brush);
     painter->drawEllipse(x, y, radius, radius);
+}
+
+bool Circle::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if (parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if (ivf.second.size() == 3)
+        {
+            x = ivf.second[0];
+            y = ivf.second[1];
+            radius = ivf.second[2];
+
+            pen = serializePen(is);
+            brush = serializeBrush(is);
+        }
+        else
+        {
+            validShape = false;
+        }
+    }
+    else
+    {
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+void Circle::internalSerializeShape(ostream& os)
+{
+    serializeStringField(os, "ShapeType", "Circle");
+    std::vector<int> dims {x, y, radius};
+    serializeIntVectorField(os, "ShapeDimensions", dims);
+    serializePen(os);
+    serializeBrush(os);
 }

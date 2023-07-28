@@ -1,7 +1,7 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 #include "Shape.h"
-class Rectangle : public Shape, public QGraphicsItem
+class Rectangle : public Shape
 {
 public:
     Rectangle(int id, int x, int y, int length, int width, QPen* pen, QBrush* brush);
@@ -20,13 +20,9 @@ public:
     QRectF boundingRect() const override;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
-
-private:
+protected:
     virtual void internalSerializeShape(ostream& os) override;
 
-    Qt::GlobalColor PenColor;
-    QPen* pen;
-    QBrush* brush;
     int x;
     int y;
     int length;

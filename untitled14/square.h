@@ -1,7 +1,7 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 #include "Shape.h"
-class Square : public Shape, public QGraphicsItem
+class Square : public Shape
 {
 public:
     Square(int id, int x, int y, int length, QPen* pen, QBrush* brush);
@@ -21,9 +21,8 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
-    Qt::GlobalColor PenColor;
-    QPen* pen;
-    QBrush* brush;
+    virtual void internalSerializeShape(ostream& os) override;
+
     int x;
     int y;
     int length;

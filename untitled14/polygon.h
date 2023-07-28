@@ -1,7 +1,7 @@
 #ifndef POLYGON_H
 #define POLYGON_H
 #include "Shape.h"
-class Polygon : public Shape, public QGraphicsItem
+class Polygon : public Shape
 {
 public:
     Polygon(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen, QBrush* brush);
@@ -23,8 +23,6 @@ public:
 private:
     virtual void internalSerializeShape(ostream& os) override;
 
-    QPen* pen;
-    QBrush* brush;
     myStd::vector<int> x;
     myStd::vector<int> y;
 

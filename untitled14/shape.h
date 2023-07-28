@@ -29,7 +29,7 @@ typedef std::pair<string, string> StringField;
 
 bool parseStringField(istream& is, const string& expectedFieldName, StringField& sf);
 bool parseIntVectorField(istream& is, const string& expectedFieldName, IntVecField& ivf);
-void serializeIntVectorField(ostream& os, const string& fieldName, const myStd::vector<int>& v);
+void serializeIntVectorField(ostream& os, const string& fieldName, const std::vector<int>& v);
 void serializeStringField(ostream& os, const string& fieldName, const string& fieldValue);
 
 /*=======================================================================================
@@ -65,12 +65,12 @@ void serializeEnumField(ostream& os, const string& fieldname, const map<T, strin
 const double pi = 3.14;
 enum SHAPE_TYPES { LINE, POLYLINE, POLYGON, RECTANGLE, SQUARE, ELLIPSE, CIRCLE, TEXT };
 
-class Shape
+class Shape : public QGraphicsItem
 {
 public:
     Shape() {id = 0;}
     Shape(int id) : id(id), pen(nullptr), brush(nullptr), font(nullptr) {}
-    Shape(int id, SHAPE_TYPES type): type{type} {this->id = id;}
+    Shape(int id, SHAPE_TYPES type): type{type}, id{id} {}
 
     virtual ~Shape()
     {
@@ -108,7 +108,9 @@ protected:
     int id;
     SHAPE_TYPES type;
     QPen* pen;
+    Qt::GlobalColor penColor;
     QBrush* brush;
+    Qt::GlobalColor brushColor;
     QFont* font;
 
 

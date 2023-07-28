@@ -26,6 +26,10 @@ Shape* ShapeFactory::createFromStream(std::istream& is)	//factory method
     {
         shapeID = shapeIdFeild.second[0];	//TODO: later make sure size is 1
     }
+    else
+    {
+        return nullptr;
+    }
 
     StringField shapeType;
     if(parseStringField(is, "ShapeType", shapeType))
@@ -71,6 +75,11 @@ Shape* ShapeFactory::createFromStream(std::istream& is)	//factory method
             s->SetShapeType(SHAPE_TYPES::TEXT);
         }
 
+        if (s == nullptr)
+        {
+            return nullptr;
+        }
+
         if(!s->serializeShape(is))
         {
             delete s;
@@ -84,45 +93,3 @@ Shape* ShapeFactory::createFromStream(std::istream& is)	//factory method
     return s;
 }
 
-//commented bc maybe dont need?
-/*
-vector<Shape*> parse(string fileName);
-
-int main()
-{
-    vector<Shape*> shapes = parse("file:///C:/Users/suraj/Downloads/shapes.txt");
-
-    for (Shape* shape : shapes)
-    {
-        delete shape;
-    }
-
-    return 0;
-}
-
-vector<Shape*> parse(string fileName)
-{
-    ifstream inFile;
-    ShapeFactory f;
-
-    inFile.open(fileName);
-
-    vector<Shape*> shapes;
-
-    while(!inFile.eof())
-    {
-        Shape* s = f.createFromStream(inFile);
-        if(s != nullptr)	//safe to keep reading bc factory function will only create a shape when it finds a valid shapeid.
-        {
-            shapes.push_back(s);
-        }
-
-    }
-
-
-
-    inFile.close();
-
-    return shapes;
-}
-*/

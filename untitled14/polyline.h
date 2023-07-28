@@ -2,7 +2,7 @@
 #define POLYLINE_H
 #include "Shape.h"
 
-class Polyline : public Shape, public QGraphicsItem
+class Polyline : public Shape
 {
 public:
     Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen);
@@ -25,8 +25,6 @@ public:
 private:
     virtual void internalSerializeShape(ostream& os) override;
 
-    Qt::GlobalColor PenColor;
-    QPen* pen;
     myStd::vector<int> x;
     myStd::vector<int> y;
 

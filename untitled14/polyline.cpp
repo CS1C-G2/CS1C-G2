@@ -1,6 +1,6 @@
 #include "polyline.h"
 Polyline::Polyline(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen) :
-    Shape(id, POLYLINE), x{x}, y{y}, pen{pen} { }
+    Shape(id, POLYLINE), x{x}, y{y} { }
 void Polyline::draw() {
     update();
 }
@@ -34,4 +34,47 @@ void Polyline::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
         points[i] = QPointF(x[i], y[i]);
     }
     painter->drawPolyline(points, SIZE);
+}
+
+bool Polyline::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if (parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if (ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
+        {
+            for (int i = 0; i < ivf.second.size(); i += 2)
+            {
+                x.push_back(ivf.second[i]);
+                y.push_back(ivf.second[i + 1]);
+            }
+
+            pen = serializePen(is);
+        }
+        else
+        {
+            validShape = false;
+        }
+    }
+    else
+    {
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr;
+}
+
+void Polyline::internalSerializeShape(ostream& os)
+{
+    serializeStringField(os, "ShapeType", "Polyline");
+    std::vector<int> dims;
+    for (int i = 0; i < x.size(); i++)
+    {
+        dims.push_back(x[i]);
+        dims.push_back(y[i]);
+    }
+    serializeIntVectorField(os, "ShapeDimensions", dims);
+    serializePen(os);
 }

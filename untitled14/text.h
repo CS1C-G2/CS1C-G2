@@ -1,7 +1,7 @@
 #ifndef TEXT_H
 #define TEXT_H
 #include "shape.h"
-class Text : public Shape, public QGraphicsItem
+class Text : public Shape
 {
 public:
     Text(int id, int x1, int y1, int w, int l, QString textString, QFont* font, QPen* pen, Qt::AlignmentFlag textAlignment);
@@ -31,8 +31,8 @@ private:
     int w;
     int l;
     QString textString;
-    QFont* font;
-    QPen* pen;
+    string textFont;
+    Qt::GlobalColor textColor;
     Qt::AlignmentFlag textAlignment;
     virtual void internalSerializeShape(ostream& os) override;
 };

@@ -1,7 +1,7 @@
 #ifndef ELLIPSE_H
 #define ELLIPSE_H
 #include "Shape.h"
-class Ellipse : public Shape, public QGraphicsItem
+class Ellipse : public Shape
 {
 public:
     Ellipse(int id, int x, int y, int radius1, int radius2,
@@ -23,10 +23,6 @@ public:
 
 private:
     virtual void internalSerializeShape(ostream& os) override;
-
-    Qt::GlobalColor PenColor;
-    QPen* pen;
-    QBrush* brush;
     int x;
     int y;
     int radius1;

@@ -19,6 +19,8 @@
 #include <QSpinBox>
 #include <QFileDialog>
 
+#include <fstream>
+
 #include "line.h"
 #include "polyline.h"
 #include "polygon.h"
@@ -32,6 +34,7 @@
 #include "admin.h"
 #include "guest.h"
 #include "textedit.h"
+#include "shapefactory.h"
 
 User *currentUser;
 
@@ -630,17 +633,46 @@ void MainWindow::createMenus() {
     connect(saveAction, &QAction::triggered, this, [this]() {
         QString fileName = QFileDialog::getSaveFileName(this, "Save Shapes", "", "Shape Files (*.txt)");
         if (!fileName.isEmpty()) {
-           // saveShapesToFile(fileName);
+           saveShapesToFile(fileName);
         }
     });
     connect(loadAction, &QAction::triggered, this, [this]() {
         QString fileName = QFileDialog::getOpenFileName(this, "Load Shapes", "", "Shape Files (*.txt)");
         if (!fileName.isEmpty()) {
-            //loadShapesFromFile(fileName);
+           loadShapesFromFile(fileName);
         }
     });
 
 } // createMenus
+
+void MainWindow::loadShapesFromFile(const QString& filename)
+{
+    std::ifstream ifs;
+    ifs.open(filename.toStdString());
+    ShapeFactory sf;
+
+    while (!ifs.eof())
+    {
+         Shape* s = sf.createFromStream(ifs);
+         if (s != nullptr)
+         {
+            addShape(s);
+         }
+    }
+    ifs.close();
+}
+
+void MainWindow::saveShapesToFile(const QString& filename)
+{
+    std::ofstream ofs;
+    ofs.open(filename.toStdString());
+
+    for( int i = 0; i < shapes.size(); i++)
+    {
+        shapes[i]->serializeShape(ofs);
+    }
+    ofs.close();
+}
 
 void MainWindow::onContactUs() {
     QDialog *contactDialog = new QDialog(this);

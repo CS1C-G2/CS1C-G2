@@ -1,6 +1,6 @@
 #include "polygon.h"
 Polygon::Polygon(int id, myStd::vector<int> x, myStd::vector<int> y, QPen* pen, QBrush* brush) :
-    Shape(id, POLYGON), x{x}, y{y}, pen{pen}, brush{brush} { }
+    Shape(id, POLYGON), x{x}, y{y} { }
 void Polygon::draw() {
     update();
 }
@@ -16,14 +16,14 @@ void Polygon::move(int x, int y) {
     draw();
 }
 double Polygon::area() {
-    int numPoints = x.size();
-    for(int i = 0; i < x.size(); i++) {
+    size_t numPoints = x.size();
+    for(size_t i = 0; i < x.size(); i++) {
         //Calculate length of sides. Can just copy code from perimeter
     }
     return 0;
 }
 double Polygon::perimeter() {
-    double perim;
+    double perim = 0.0;
     for(int i = 0; i < x.size()-1; i++) {
         perim += sqrt(pow(x[i+1] - x[i], 2) + pow(y[i+1] - y[i], 2));
     }
@@ -44,4 +44,50 @@ void Polygon::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     painter->setPen(*pen);
     painter->setBrush(*brush);
     painter->drawPolygon(points, 4);
+}
+
+
+bool Polygon::serializeShape(istream& is)
+{
+    bool validShape = true;
+    // in here read in the shape stuffs from the stream
+    IntVecField ivf;
+    if (parseIntVectorField(is, "ShapeDimensions", ivf))
+    {
+        if (ivf.second.size() >= 4 && ivf.second.size() % 2 == 0)
+        {
+            for (int i = 0; i < ivf.second.size(); i += 2)
+            {
+                x.push_back(ivf.second[i]);
+                y.push_back(ivf.second[i + 1]);
+            }
+
+            pen = serializePen(is);
+            brush = serializeBrush(is);
+        }
+        else
+        {
+            validShape = false;
+        }
+    }
+    else
+    {
+        validShape = false;
+    }
+
+    return validShape && pen != nullptr && brush != nullptr;
+}
+
+void Polygon::internalSerializeShape(ostream& os)
+{
+    serializeStringField(os, "ShapeType", "Polygon");
+    std::vector<int> dims;
+    for (int i = 0; i < x.size(); i++)
+    {
+        dims.push_back(x[i]);
+        dims.push_back(y[i]);
+    }
+    serializeIntVectorField(os, "ShapeDimensions", dims);
+    serializePen(os);
+    serializeBrush(os);
 }

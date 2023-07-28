@@ -2,7 +2,7 @@
 #define LINE_H
 #include "Shape.h"
 
-class Line : public Shape, public QGraphicsItem
+class Line : public Shape
 {
 public:
     Line(int id) : Shape(id) {}
@@ -22,10 +22,8 @@ public:
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
-
-private:
+protected:
     virtual void internalSerializeShape(ostream& os) override;
-    QPen* pen;
     int x1;
     int y1;
     int x2;
