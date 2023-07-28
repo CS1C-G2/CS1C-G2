@@ -76,4 +76,23 @@ int main() {
     }
 
 
+    // Test iterators in vector class
+    std::cout << "\nTesting iterators in vector\n";
+
+    std::cout << "intVec: ";
+    for(int i = 0; i < intVec.size(); i++) {
+        std::cout << intVec[i] << " ";
+    }
+    std::cout << std::endl;
+
+    myStd::vector<int>::iterator it = intVec.begin();
+
+    std::cout << "Vector elements after iterator: ";
+    while (it != intVec.end()) {
+        std::cout << *it << " ";
+        ++it;
+    }
+    std::cout << std::endl;
+
+
 }
