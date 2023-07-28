@@ -37,6 +37,13 @@ set(PROJECT_SOURCES
         vector.cpp
         testimonial.cpp
         testimonial.h
+	admin.h
+	admin.cpp
+	guest.h
+	guest.cpp
+        user.h
+        user.cpp
+	vector.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

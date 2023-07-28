@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
+    <width>1331</width>
     <height>814</height>
    </rect>
   </property>
@@ -24,10 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>7</number>
-    </property>
-    <property name="usesScrollButtons">
-     <bool>true</bool>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Line">
      <attribute name="title">
@@ -3951,6 +3948,158 @@
         </property>
        </item>
       </widget>
+      <widget class="QLabel" name="PenWidth_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>381</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Pen Width:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="PenStyle_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>421</y>
+         <width>71</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Pen Style:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="PenCapStyle_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>461</y>
+         <width>101</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Pen Cap Style:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="PenJoinStyle_5">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>501</y>
+         <width>101</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Pen Join Style:</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="penStyleValue_5">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>420</y>
+         <width>141</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>no pen</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>solid line</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>dash line</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>dot line</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>dash dot line</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>dash dot dot line</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="penJoinStyleValue_5">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>500</y>
+         <width>141</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>miter join</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>bevel join</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>round join</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QComboBox" name="penCapStyleValue_5">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>460</y>
+         <width>141</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>flat cap</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>square cap</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>round cap</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QSpinBox" name="penWidthValue_5">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>380</y>
+         <width>51</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
       <widget class="QLabel" name="Text_5">
        <property name="geometry">
         <rect>
@@ -4254,10 +4403,10 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>110</y>
-      <width>421</width>
-      <height>351</height>
+      <x>310</x>
+      <y>120</y>
+      <width>941</width>
+      <height>531</height>
      </rect>
     </property>
    </widget>
@@ -4369,18 +4518,82 @@
      </property>
     </widget>
    </widget>
+   <widget class="QLineEdit" name="usernameEdit">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>30</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loginButton">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>60</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Login</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="passwordEdit">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>30</y>
+      <width>113</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>10</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Username</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>10</y>
+      <width>49</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Password</string>
+    </property>
+   </widget>
    <zorder>CreateShape</zorder>
    <zorder>graphicsView</zorder>
    <zorder>tabWidget</zorder>
    <zorder>widget</zorder>
+   <zorder>usernameEdit</zorder>
+   <zorder>loginButton</zorder>
+   <zorder>passwordEdit</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1012</width>
-     <height>24</height>
+     <width>1331</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

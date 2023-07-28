@@ -16,6 +16,7 @@
 #include <QComboBox>
 #include <QSlider>
 #include <QSpinBox>
+#include <QFileDialog>
 
 #include "line.h"
 #include "polyline.h"
@@ -30,6 +31,8 @@
 #include "admin.h"
 #include "guest.h"
 
+User *currentUser;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
@@ -37,13 +40,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     currentUser = new Guest();
-    updateUIForCurrentUser()
+    updateUIForCurrentUser();
     
-    connect(ui->loginButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
-
     createMenus();
+    loginButton = ui->loginButton;
+    connect(loginButton, &QPushButton::clicked, this, &MainWindow::onLoginClicked);
     startRenderingArea();
-    onShapeCreate(currentUser);
+    onShapeCreate();
 
     //Uncomment code below to clear the testimonials
     //clearTestimonials();
@@ -209,8 +212,7 @@ void MainWindow::updateUIForCurrentUser() {
     }
 }
 
-void MainWindow::createShape(User* user) {
-    if(user->getType() == "Admin") {
+void MainWindow::createShape() {
         switch (ui->tabWidget->currentIndex()) {
         case 0:
             createLine();
@@ -247,26 +249,17 @@ void MainWindow::createShape(User* user) {
         default:
             break;
         }
-    } else {
-        
-    }
 }
 
 void MainWindow::onShapeCreate() {
 
     // Create "Create" button for Square tab
-    QPushButton* createButton = ui->CreateShape;
-    connect(createButton, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
+   // QPushButton* createButton = ui->CreateShape;
+    connect(ui->CreateShape, &QPushButton::clicked, this, &MainWindow::createShape); // Connect the button to the createSquare() slot
     connect(ui->AddPoint, &QPushButton::clicked, this, &MainWindow::addPolylinePoint);
     connect(ui->AddPoint_1, &QPushButton::clicked, this, &MainWindow::addPolygonPoint);
     connect(ui->Delete, &QPushButton::clicked, this, &MainWindow::onDeleteShape);
     connect(ui->Move, &QPushButton::clicked, this, &MainWindow::onMoveShape);
-
-    //Change if you need to, added just in case.
-    connect(createButton, &QPushButton::clicked, this, [this, currentUser]() {
-        this->createShape(currentUser);
-    }
-        
 } // onShapeCreate
 
 void MainWindow::addPolylinePoint() {
@@ -611,6 +604,10 @@ void MainWindow::createMenus() {
     aboutAction = new QAction("About us", this);
     addTestimonial = new QAction("Add Testimonial", this);
     viewTestimonial = new QAction("View Testimonials", this);
+    saveAction = new QAction("Save", this);
+    loadAction = new QAction("Load", this);
+    fileMenu->addAction(saveAction);
+    fileMenu->addAction(loadAction);
     fileMenu->addAction(contactAction);
     fileMenu->addAction(helpAction);
     fileMenu->addAction(aboutAction);
@@ -621,6 +618,18 @@ void MainWindow::createMenus() {
     connect(aboutAction, &QAction::triggered, this, &MainWindow::onAbout);
     connect(addTestimonial, &QAction::triggered, this, &MainWindow::onAddTestimonial);
     connect(viewTestimonial, &QAction::triggered, this, &MainWindow::onViewTestimonials);
+    connect(saveAction, &QAction::triggered, this, [this]() {
+        QString fileName = QFileDialog::getSaveFileName(this, "Save Shapes", "", "Shape Files (*.txt)");
+        if (!fileName.isEmpty()) {
+           // saveShapesToFile(fileName);
+        }
+    });
+    connect(loadAction, &QAction::triggered, this, [this]() {
+        QString fileName = QFileDialog::getOpenFileName(this, "Load Shapes", "", "Shape Files (*.txt)");
+        if (!fileName.isEmpty()) {
+            //loadShapesFromFile(fileName);
+        }
+    });
 
 } // createMenus
 

@@ -15,6 +15,8 @@
 #include "vector.cpp"
 #include "Shape.h"
 
+class User;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -33,14 +35,14 @@ public:
 
 public slots:
     void startRenderingArea();
-    void createShape(User* user);
+    void createShape();
 
 private slots:
     void createMenus();
     void onContactUs();
     void onAbout();
     void onHelp();
-    void onShapeCreate(User* currentUser);
+    void onShapeCreate();
     void onAddTestimonial();
     void onViewTestimonials();
     void createLine();
@@ -71,9 +73,9 @@ private:
     QGraphicsScene *graphicsScene;
     QPushButton* createButton;
     QPushButton* loginButton;
-
+    QAction* saveAction;
+    QAction* loadAction;
     User *currentUser;
-
     myStd::vector<int> inputX;
     myStd::vector<int> inputY;
     myStd::vector<Shape*> shapes;
