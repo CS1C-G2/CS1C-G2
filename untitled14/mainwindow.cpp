@@ -18,6 +18,7 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QFileDialog>
+#include <QPixmap> // Include QPixmap for loading images
 
 #include "line.h"
 #include "polyline.h"
@@ -645,11 +646,23 @@ void MainWindow::createMenus() {
 void MainWindow::onContactUs() {
     QDialog *contactDialog = new QDialog(this);
     contactDialog->setWindowTitle("Contact Us");
+    // Create a QLabel for the logo
+    QLabel *logoLabel = new QLabel(contactDialog);
+    QPixmap logoPixmap("C:/Users/suraj/Downloads/untitled14/logo.png");
+    // Check if the image was loaded successfully
+    if (!logoPixmap.isNull()) {
+         // Scale the image to fit the label (optional)
+         //logoPixmap = logoPixmap.scaled(500, 500, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+         logoLabel->setPixmap(logoPixmap);
+    }
+
     QLabel *label = new QLabel("please email us at: someone@email.com", contactDialog);
     label->setAlignment(Qt::AlignCenter);
     QVBoxLayout *layout = new QVBoxLayout(contactDialog);
     layout->addWidget(label);
+    layout->addWidget(logoLabel); // Add the logo label to the layout
     contactDialog->exec();
+
 
 } //onContactUs
 
